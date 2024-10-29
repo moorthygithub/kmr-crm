@@ -1,0 +1,22 @@
+/* .textfields-wrapper form > div {
+  display: grid;
+  grid-template-columns: 1fr 1fr; 
+  gap: 20px;
+}
+
+@media (max-width: 600px) {
+  .textfields-wrapper form > div {
+    grid-template-columns: 1fr; 
+  }
+
+  .textfields-wrapper form > div > div {
+    align-items: center;
+    background-color: rgb(198, 110, 4);
+  }
+
+  .textfields-wrapper form > div img {
+    width: 100%;
+    height: auto;
+    margin-bottom: 16px;
+  }
+} */

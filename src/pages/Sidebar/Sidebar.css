@@ -1,0 +1,24 @@
+/* Sidebar */
+.drawer {
+  transition: width 0.3s ease;
+}
+
+.drawer.collapsed {
+  width: 60px;
+}
+
+.drawer.expanded {
+  width: 240px;
+}
+
+.drawer.collapsed .MuiListItemText-root {
+  display: none;
+}
+
+.main-content.collapsed {
+  margin-left: 60px;
+}
+
+.main-content.expanded {
+  margin-left: 240px;
+}
