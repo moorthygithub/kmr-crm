@@ -1,94 +1,84 @@
-import React from "react";
-import "./App.css"
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  Navigate,
-} from "react-router-dom";
-import Login from "./pages/Login/Login";
-import SignUp from "./pages/Signup/Signup";
-import ForgotPassword from "../src/pages/Login/ForgotPassword";
-import Dashboard from "./pages/Dashboard/Dashboard";
-import Layout from "./pages/Layout/Layout";
-import Profile from "../src/pages/Profile/Profile";
-// import RegisterForm from "./pages/RegisterForm/RegisterForm";
-import { StatusProvider } from "./pages/Login/StatusCheck";
-import Maintance from "./pages/Maintance/Maintaince";
-///////////////MASTER///////////////////////////////
-import Category from "../src/pages/Master/Categorys/Category";
-import Addcategory from "../src/pages/Master/Categorys/Addcategory";
-import SubCategory from "../src/pages/Master/SubCategorys/Subcategory";
-import Edit from "../src/pages/Master/Categorys/Editcategory";
-import AddsubCategory from "../src/pages/Master/SubCategorys/Addsubcategory";
-import EditSubcategory from "../src/pages/Master/SubCategorys/EditSubcategory";
-import News from "../src/pages/Master/News/News";
-import AddNews from "../src/pages/Master/News/AddNews";
-import EditNews from "../src/pages/Master/News/EditNews";
-import NewListVendor from "../src/pages/Master/Vendor/Vendor";
-import AddVendor from "../src/pages/Master/Vendor/AddVendor";
-import EditVendor from "../src/pages/Master/Vendor/EditVendor";
-import VendorUser from "../src/pages/Master/VendorUser/VendorUser";
-import AddVendorUser from "../src/pages/Master/VendorUser/AddVendorUser";
-import EditVendorUser from "../src/pages/Master/VendorUser/EditVendorUser";
-///////////////TRADERS///////////////////////////////
-import Live from "../src/pages/Traders/Live/Live";
-import EditLive from "../src/pages/Traders/Live/EditLive";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import SignIn from "./pages/auth/SignIn";
+import Dashboard from "./pages/home/Dashboard";
+import LiveList from "./pages/appUpdates/live/LiveList";
+import SpotList from "./pages/appUpdates/spot/SpotList";
+import AddSpotList from "./pages/appUpdates/spot/AddSpotList";
+import NewsList from "./pages/appUpdates/news/NewsList";
+import AddNewsList from "./pages/appUpdates/news/AddNewsList";
+import EditNewsList from "./pages/appUpdates/news/EditNewsList";
+import RatesList from "./pages/appUpdates/rates/RatesList";
+import AddRatesList from "./pages/appUpdates/rates/AddRatesList";
+import EditRatesList from "./pages/appUpdates/rates/EditRatesList";
+import CategoryList from "./pages/master/category/CategoryList";
+import SubCategory from "./pages/master/subCategory.jsx/SubCategory";
+import VendorList from "./pages/master/vendor/VendorList";
+import VendorUserList from "./pages/master/vendorUser/VendorUserList";
+import EditLiveList from "./pages/appUpdates/live/EditLiveList";
+import ForgetPassword from "./pages/auth/ForgetPassword";
+import { Toaster } from "sonner";
+import AddCategory from "./pages/master/category/AddCategory";
+import EditCategory from "./pages/master/category/EditCategory";
+import AddSubCategory from "./pages/master/subCategory.jsx/AddSubCategory";
+import EditSubCategory from "./pages/master/subCategory.jsx/EditSubCategory";
+import EditVendor from "./pages/master/vendor/EditVendor";
+import AddVendor from "./pages/master/vendor/AddVendor";
+import EditVednorUser from "./pages/master/vendorUser/EditVednorUser";
+import AddVendorUser from "./pages/master/vendorUser/AddVendorUser";
+import Profile from "./pages/profile/Profile";
 
-import Rate from "../src/pages/Traders/Rates/Rates";
-import EditRate from "../src/pages/Traders/Rates/EditRates";
-
-import SpotRate from "../src/pages/Traders/SpotRate/SpotRates";
-import AddSpotRate from "../src/pages/Traders/SpotRate/AddSpotRate";
-
-const App = () => {
-
-  
+function App() {
   return (
     <Router>
-      <StatusProvider>
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/forgot" element={<ForgotPassword />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/maintenance" element={<Maintance />} />
+       <Toaster richColors position="top-right" />
+      <Routes>
+        <Route path="/" element={<SignIn />} />
+        <Route path="/home" element={<Dashboard />} />
+        <Route path="/forget-password" element={<ForgetPassword />} />
+        <Route path="/profile" element={<Profile />} />
 
-          {/* Private Routes */}
-          <Route path="/" element={<Layout />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/profile" element={<Profile />} />
-            {/* /////////////////////MASTER///////// */}
-            <Route path="/register/category" element={<Category />} />
-            <Route path="/register/category/add" element={<Addcategory />} />
-            <Route path="/category/edit" element={<Edit />} />
-            <Route path="/subcategory" element={<SubCategory />} />
-            <Route path="/subcategory/add" element={<AddsubCategory />} />
-            <Route path="/subcategory/edit" element={<EditSubcategory />} />
-            <Route path="/news" element={<News />} />
-            <Route path="/news/add" element={<AddNews />} />
-            <Route path="/news/edit" element={<EditNews />} />
-            <Route path="/vendor" element={<NewListVendor />} />
-            <Route path="/vendor/add" element={<AddVendor />} />
-            <Route path="/vendor/edit" element={<EditVendor />} />
-            <Route path="/vendoruser" element={<VendorUser />} />
-            <Route path="/vendoruser/add" element={<AddVendorUser />} />
-            <Route path="/vendoruser/edit" element={<EditVendorUser />} />
-            {/* ///////////////////////////////////TRADERS//////////////////////////////////// */}
-            <Route path="/traders/live" element={<Live />} />
-            <Route path="/traders/live/edit" element={<EditLive />} />
-            <Route path="/traders/rates" element={<Rate />} />
-            <Route path="/traders/rates/edit" element={<EditRate />} />
-            <Route path="/traders/spotrates" element={<SpotRate />} />
-            <Route path="/traders/spotrates/add" element={<AddSpotRate />} />
-          </Route>
+        {/* app update -- live  */}
+        <Route path="/app-update/live" element={<LiveList />} />
+        <Route path="/app-update/live/edit/:id" element={<EditLiveList />} />
 
-          {/* Redirect unknown routes to login */}
-          <Route path="*" element={<Navigate to="/login" />} />
-        </Routes>
-      </StatusProvider>
+        {/* app update--  spot  */}
+        <Route path="/app-update/spot" element={<SpotList />} />
+        <Route path="/app-update/spot/add" element={<AddSpotList />} />
+
+
+      {/* app updates -news  */}
+        <Route path="/app-update/news" element={<NewsList />} />
+        <Route path="/app-update/news/add" element={<AddNewsList />} />
+        <Route path="/app-update/news/edit/:id" element={<EditNewsList />} />
+
+      {/* app update -rates  */}
+        <Route path="/app-update/rates" element={<RatesList />} />
+        <Route path="/app-update/rates/edit/:id" element={<EditRatesList />} />
+        <Route path="/app-update/rates/add" element={<AddRatesList />} />
+
+        {/* master -category  */}
+       
+        <Route path="/master/category" element={<CategoryList />} />
+        <Route path="/master/category/add" element={<AddCategory />} />
+        <Route path="/master/category/edit/:id" element={<EditCategory />} />
+
+
+
+    {/* master -sub category */}
+        <Route path="/master/subcategory" element={<SubCategory />} />
+        <Route path="/master/subcategory/add" element={<AddSubCategory />} />
+        <Route path="/master/subcategory/edit/:id" element={<EditSubCategory />} />
+        {/* master -vendor  */}
+        <Route path="/master/vendor" element={<VendorList />} />
+        <Route path="/master/vendor/add" element={<AddVendor />} />
+        <Route path="/master/vendor/edit/:id" element={<EditVendor />} />
+        {/* master - vendor user  */}
+        <Route path="/master/vendor-user" element={<VendorUserList />} />
+        <Route path="/master/vendor-user/add" element={<AddVendorUser />} />
+        <Route path="/master/vendor-user/edit/:id" element={<EditVednorUser />} />
+      </Routes>
     </Router>
   );
-};
+}
 
 export default App;

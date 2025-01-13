@@ -1,23 +1,15 @@
 import React, { useState } from "react";
-import {
-  TextField,
-  Button as MUIButton,
-  Box,
-  IconButton,
-  Typography,
-} from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import Layout from "../../../components/Layout";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { baseURL } from "../../../api/api";
+import { Base_Url } from "../../../config/BaseUrl";
+import { toast } from "sonner";
 import { ArrowBack } from "@mui/icons-material";
-import Grid2 from "@mui/material/Unstable_Grid2";
 
 const AddVendorUser = () => {
   const navigate = useNavigate();
 
-  const [VendorUser, setVendorUser] = useState({
+  const [vendorUser, setVendorUser] = useState({
     name: "",
     mobile: "",
     email: "",
@@ -27,57 +19,54 @@ const AddVendorUser = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // Handle input change
   const onInputChange = (e) => {
     const { name, value } = e.target;
     setVendorUser({
-      ...VendorUser,
+      ...vendorUser,
       [name]: value,
     });
   };
 
+  // Handle form submission
   const onSubmit = (e) => {
     e.preventDefault();
 
-    const data = new FormData();
-    data.append("name", VendorUser.name);
-    data.append("mobile", VendorUser.mobile);
-    data.append("email", VendorUser.email);
-    data.append("remarks", VendorUser.remarks);
+    const formData = new FormData();
+    formData.append("name", vendorUser.name);
+    formData.append("mobile", vendorUser.mobile);
+    formData.append("email", vendorUser.email);
+    formData.append("remarks", vendorUser.remarks);
 
-    const isFormValid = document.getElementById("addIndiv").checkValidity();
-    document.getElementById("addIndiv").reportValidity();
+    const isFormValid = document.getElementById("addVendorUserForm").checkValidity();
+    document.getElementById("addVendorUserForm").reportValidity();
 
     if (isFormValid) {
       setIsButtonDisabled(true);
+      setLoading(true);
 
       axios({
-        url: `${baseURL}/panel-create-vendor-user`,
+        url: `${Base_Url}/panel-create-vendor-user`,
         method: "POST",
-        data: data,
+        data: formData,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       })
         .then((res) => {
-          if (res.data.code === 200) {
-            setLoading(true);
-            toast.success(res.data.msg || "Data inserted successfully", {
-              position: "top-right",
-            });
-            setTimeout(() => {
-              navigate("/vendoruser");
-            }, 2000);
+          if (res.data.code == 200) {
+            navigate("/master/vendor-user");
+            toast.success(res.data.msg || "Data inserted successfully");
+        
+             
+           
           } else {
-            toast.error(res.data.msg || "Duplicate Entry", {
-              position: "top-right",
-            });
+            toast.error(res.data.msg || "Duplicate Entry");
             setIsButtonDisabled(false);
           }
         })
         .catch((err) => {
-          toast.error(err.response?.data?.msg || "An error occurred", {
-            position: "top-right",
-          });
+          toast.error(err.response?.data?.msg || "An error occurred");
           setIsButtonDisabled(false);
           setLoading(false);
         });
@@ -85,110 +74,114 @@ const AddVendorUser = () => {
   };
 
   return (
-    <Box sx={{ marginTop: "100px" }}>
-      <Box display="flex" alignItems="center" mb={2}>
-        <Link to="/vendoruser">
-          <IconButton aria-label="Back">
-            <ArrowBack />
-          </IconButton>
-        </Link>
-        <Typography variant="h6" sx={{ marginLeft: "8px" }}>
-          Create Vendor User
-        </Typography>
-      </Box>
-      <Box
-        sx={{
-          padding: "5%",
-          boxShadow: `rgba(0, 0, 0, 0.25) 0px 54px 55px,
-              rgba(0, 0, 0, 0.12) 0px -12px 30px,
-              rgba(0, 0, 0, 0.12) 0px 4px 6px,
-              rgba(0, 0, 0, 0.17) 0px 12px 13px,
-              rgba(0, 0, 0, 0.09) 0px -3px 5px`,
-        }}
-      >
-        <ToastContainer autoClose={3000} />
-
-        <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
-          <Grid2 container spacing={4}>
-            <Grid2 xs={12} md={4}>
-              <Box>
-                <TextField
-                  fullWidth
-                  required
-                  label="Name"
-                  name="name"
-                  variant="standard"
-                  value={VendorUser.name}
-                  onChange={onInputChange}
-                />
-              </Box>
-            </Grid2>
-
-            <Grid2 xs={12} md={4}>
-              <Box>
-                <TextField
-                  fullWidth
-                  required
-                  label="Mobile"
-                  name="mobile"
-                  variant="standard"
-                  inputProps={{ maxLength: 10, minLength: 10 }}
-                  value={VendorUser.mobile}
-                  onChange={onInputChange}
-                />
-              </Box>
-            </Grid2>
-            <Grid2 xs={12} md={4}>
-              <Box>
-                <TextField
-                  fullWidth
-                  required
-                  label="Email"
-                  type="email"
-                  name="email"
-                  variant="standard"
-                  value={VendorUser.email}
-                  onChange={onInputChange}
-                />
-              </Box>
-            </Grid2>
-            <Grid2 xs={12}>
-              <Box>
-                <TextField
-                  fullWidth
-                  required
-                  label="Remarks"
-                  name="remarks"
-                  variant="standard"
-                  value={VendorUser.remarks}
-                  onChange={onInputChange}
-                />
-              </Box>
-            </Grid2>
-          </Grid2>
-          <Box display="flex" justifyContent="center" mt={2}>
-            <MUIButton
-              type="submit"
-              variant="contained"
-              color="primary"
-              disabled={isButtonDisabled}
-              sx={{ marginRight: 2 }}
-            >
-              {loading ? "Submiting..." : "Submit"}
-            </MUIButton>
-
-            <MUIButton
-              component={Link}
-              to="/vendoruser"
-              variant="contained"
-              color="secondary"
-            >
-              Back
-            </MUIButton>
-          </Box>
-        </form>
-      </Box>
-    </Box>
+    <Layout>
+        <div className="p-2 bg-gray-50 min-h-screen">
+              {/* Header */}
+              <div className="flex items-center mb-4 p-4 bg-white shadow-sm rounded-lg">
+                <button
+                  onClick={() => navigate("/master/vendor-user")}
+                  className="text-gray-600 hover:text-gray-900 transition-colors"
+                >
+                  <ArrowBack />
+                </button>
+                <h1 className="text-2xl font-semibold text-gray-800 ml-2">
+                  Create Vendor User
+                </h1>
+              </div>
+      
+              {/* Form */}
+              <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 w-full">
+                <form id="addVendorUserForm" autoComplete="off" onSubmit={onSubmit}>
+                  <div className="space-y-4">
+                    {/* Name Input */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Name <span className="text-red-700">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        name="name"
+                        value={vendorUser.name}
+                        onChange={onInputChange}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all"
+                        placeholder="Enter Name"
+                        required
+                      />
+                    </div>
+      
+                    {/* Mobile Input */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Mobile <span className="text-red-700">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        name="mobile"
+                        value={vendorUser.mobile}
+                        onChange={onInputChange}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all"
+                        placeholder="Enter Mobile"
+                        inputMode="numeric"
+                        maxLength={10}
+                        minLength={10}
+                        required
+                      />
+                    </div>
+      
+                    {/* Email Input */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Email <span className="text-red-700">*</span>
+                      </label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={vendorUser.email}
+                        onChange={onInputChange}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all"
+                        placeholder="Enter Email"
+                        required
+                      />
+                    </div>
+      
+                    {/* Remarks Input */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Remarks <span className="text-red-700">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        name="remarks"
+                        value={vendorUser.remarks}
+                        onChange={onInputChange}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all"
+                        placeholder="Enter Remarks"
+                        required
+                      />
+                    </div>
+                  </div>
+      
+                  {/* Buttons */}
+                  <div className="flex justify-end mt-8 space-x-4">
+                    <button
+                      type="button"
+                      onClick={() => navigate("/master/vendor-user")}
+                      className="px-6 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={isButtonDisabled}
+                      className="px-6 py-2 text-sm font-medium text-white bg-accent-500 rounded-lg hover:bg-accent-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+                    >
+                      {loading ? "Submitting..." : "Submit"}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+    </Layout>
   );
 };
 
