@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import Layout from "../../../components/Layout";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
-import { Base_Url } from "../../../config/BaseUrl";
-import { toast } from "sonner";
 import { ArrowBack } from "@mui/icons-material";
+import { Base_Url } from "../../../config/BaseUrl";
 
 const statusOptions = [
   { value: "Active", label: "Active" },
@@ -17,7 +18,7 @@ const traderOptions = [
   { value: "3", label: "Spot Rates" },
 ];
 
-const EditVendor = () => {
+const EditRatesList = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -149,13 +150,21 @@ const EditVendor = () => {
       );
 
       if (response.data.code == 200) {
-        navigate("/master/vendor");
-        toast.success(response.data.msg || "Data updated successfully");
+        toast.success(response.data.msg || "Data updated successfully", {
+          position: "top-right",
+        });
+        setTimeout(() => {
+          navigate("/app-update/rates");
+        }, 2000);
       } else if (response.data.code == 403) {
-        toast.error(response.data.msg || "Duplicate Entry.");
+        toast.error(response.data.msg || "Duplicate Entry.", {
+          position: "top-right",
+        });
       }
     } catch (error) {
-      toast.error(error.response?.data?.msg || "An error occurred");
+      toast.error(error.response?.data?.msg || "An error occurred", {
+        position: "top-right",
+      });
     } finally {
       setIsButtonDisabled(false);
       setLoading(false);
@@ -166,27 +175,29 @@ const EditVendor = () => {
     <Layout>
       <div className="p-2 bg-gray-50 min-h-screen">
         {/* Header */}
-        <div className="flex items-center mb-4 p-4 bg-white shadow-sm rounded-lg">
+        <div className="flex items-center mb-8 p-4 bg-white shadow-sm rounded-lg">
           <button
-            onClick={() => navigate("/master/vendor")}
+            onClick={() => navigate("/app-update/rates")}
             className="text-gray-600 hover:text-gray-900 transition-colors"
           >
             <ArrowBack />
           </button>
           <h1 className="text-2xl font-semibold text-gray-800 ml-2">
-            Edit Vendor
+            Edit Vendor Rates
           </h1>
         </div>
 
         {/* Form */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 w-full">
+          <ToastContainer autoClose={3000} />
+
           <form autoComplete="off" onSubmit={onSubmit}>
             <div className="space-y-6">
               {/* Vendor Details */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Vendor Name <span className="text-red-700">*</span>
+                    Vendor Name
                   </label>
                   <input
                     type="text"
@@ -201,7 +212,7 @@ const EditVendor = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Mobile <span className="text-red-700">*</span>
+                    Mobile
                   </label>
                   <input
                     type="text"
@@ -215,7 +226,7 @@ const EditVendor = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email <span className="text-red-700">*</span>
+                    Email
                   </label>
                   <input
                     type="email"
@@ -229,7 +240,7 @@ const EditVendor = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Address <span className="text-red-700">*</span>
+                    Address
                   </label>
                   <input
                     type="text"
@@ -243,7 +254,7 @@ const EditVendor = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    City <span className="text-red-700">*</span>
+                    City
                   </label>
                   <input
                     type="text"
@@ -257,7 +268,7 @@ const EditVendor = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Category <span className="text-red-700">*</span>
+                    Category
                   </label>
                   <select
                     name="vendor_category"
@@ -278,7 +289,7 @@ const EditVendor = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Trader <span className="text-red-700">*</span>
+                    Trader
                   </label>
                   <input
                     type="text"
@@ -293,7 +304,7 @@ const EditVendor = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Status <span className="text-red-700">*</span>
+                    Status
                   </label>
                   <select
                     name="vendor_status"
@@ -322,7 +333,7 @@ const EditVendor = () => {
                 >
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Sub Category <span className="text-red-700">*</span>
+                      Sub Category
                     </label>
                     <select
                       name="vendor_product_category_sub"
@@ -335,10 +346,7 @@ const EditVendor = () => {
                         Select Sub Category
                       </option>
                       {subcategories.map((option) => (
-                        <option
-                          key={option.id}
-                          value={option.category_sub_name}
-                        >
+                        <option key={option.id} value={option.category_sub_name}>
                           {option.category_sub_name}
                         </option>
                       ))}
@@ -346,7 +354,7 @@ const EditVendor = () => {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Product Name <span className="text-red-700">*</span>
+                      Product Name
                     </label>
                     <input
                       type="text"
@@ -360,7 +368,7 @@ const EditVendor = () => {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Size <span className="text-red-700">*</span>
+                      Size
                     </label>
                     <input
                       type="text"
@@ -374,7 +382,7 @@ const EditVendor = () => {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Rate <span className="text-red-700">*</span>
+                      Rate
                     </label>
                     <input
                       type="number"
@@ -394,7 +402,7 @@ const EditVendor = () => {
             <div className="flex justify-end mt-8 space-x-4">
               <button
                 type="button"
-                onClick={() => navigate("/master/vendor")}
+                onClick={() => navigate("/app-update/rates")}
                 className="px-6 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
               >
                 Cancel
@@ -414,4 +422,4 @@ const EditVendor = () => {
   );
 };
 
-export default EditVendor;
+export default EditRatesList;
