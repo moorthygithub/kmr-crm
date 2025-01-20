@@ -26,11 +26,17 @@ import AddVendor from "./pages/master/vendor/AddVendor";
 import EditVednorUser from "./pages/master/vendorUser/EditVednorUser";
 import AddVendorUser from "./pages/master/vendorUser/AddVendorUser";
 import Profile from "./pages/profile/Profile";
+import Notification from "./pages/Notification/Notification";
+import AddNotification from "./pages/Notification/AddNotification";
+import EditNotification from "./pages/Notification/EditNotification";
+import Slider from "./pages/appUpdates/slider/Slider";
+import AddSlider from "./pages/appUpdates/slider/AddSlider";
+import EditSlider from "./pages/appUpdates/slider/EditSlider";
 
 function App() {
   return (
     <Router>
-       <Toaster richColors position="top-right" />
+      <Toaster richColors position="top-right" />
       <Routes>
         <Route path="/" element={<SignIn />} />
         <Route path="/home" element={<Dashboard />} />
@@ -45,29 +51,33 @@ function App() {
         <Route path="/app-update/spot" element={<SpotList />} />
         <Route path="/app-update/spot/add" element={<AddSpotList />} />
 
-
-      {/* app updates -news  */}
+        {/* app updates -news  */}
         <Route path="/app-update/news" element={<NewsList />} />
         <Route path="/app-update/news/add" element={<AddNewsList />} />
         <Route path="/app-update/news/edit/:id" element={<EditNewsList />} />
 
-      {/* app update -rates  */}
+        {/* app update -rates  */}
         <Route path="/app-update/rates" element={<RatesList />} />
         <Route path="/app-update/rates/edit/:id" element={<EditRatesList />} />
         <Route path="/app-update/rates/add" element={<AddRatesList />} />
+        {/* /app update -slider */}
+        <Route path="/app-update/slider" element={<Slider />} />
+        <Route path="/app-update/slider/add" element={<AddSlider />} />
+        <Route path="/app-update/slider/edit/:id" element={<EditSlider />} />
 
         {/* master -category  */}
-       
+
         <Route path="/master/category" element={<CategoryList />} />
         <Route path="/master/category/add" element={<AddCategory />} />
         <Route path="/master/category/edit/:id" element={<EditCategory />} />
 
-
-
-    {/* master -sub category */}
+        {/* master -sub category */}
         <Route path="/master/subcategory" element={<SubCategory />} />
         <Route path="/master/subcategory/add" element={<AddSubCategory />} />
-        <Route path="/master/subcategory/edit/:id" element={<EditSubCategory />} />
+        <Route
+          path="/master/subcategory/edit/:id"
+          element={<EditSubCategory />}
+        />
         {/* master -vendor  */}
         <Route path="/master/vendor" element={<VendorList />} />
         <Route path="/master/vendor/add" element={<AddVendor />} />
@@ -75,7 +85,15 @@ function App() {
         {/* master - vendor user  */}
         <Route path="/master/vendor-user" element={<VendorUserList />} />
         <Route path="/master/vendor-user/add" element={<AddVendorUser />} />
-        <Route path="/master/vendor-user/edit/:id" element={<EditVednorUser />} />
+        <Route
+          path="/master/vendor-user/edit/:id"
+          element={<EditVednorUser />}
+        />
+
+        {/* //Notification */}
+        <Route path="/notification" element={<Notification />} />
+        <Route path="/notification/add" element={<AddNotification />} />
+        <Route path="/notification/edit/:id" element={<EditNotification />} />
       </Routes>
     </Router>
   );
