@@ -127,7 +127,7 @@ const EditSlider = () => {
                       : `https://kmrlive.in/storage/app/public/slider_images/${Slider.slider_images}?t=${RandomValue}`
                   }
                   alt="Slider"
-                  className="w-48 h-54 object-cover rounded-lg"
+                  className="w-48 h-48 object-cover rounded-lg"
                 />
               </div>
 
