@@ -7,10 +7,12 @@ import {
   FiChevronDown,
   FiChevronRight,
 } from "react-icons/fi";
+import { IoIosNotificationsOutline } from "react-icons/io";
 
-const Sidebar = ({ isOpen, setIsOpen, isCollapsed }) => {
+
+const Sidebar = ({ isOpen, setIsOpen, isCollapsed, usertype_id }) => {
   const [openSubmenu, setOpenSubmenu] = useState("");
-  const location = useLocation(); 
+  const location = useLocation();
 
   const menuItems = [
     {
@@ -36,7 +38,15 @@ const Sidebar = ({ isOpen, setIsOpen, isCollapsed }) => {
         { name: "Rates", path: "/app-update/rates" },
         { name: "Spot", path: "/app-update/spot" },
         { name: "News", path: "/app-update/news" },
+        ...(usertype_id == 4
+          ? [{ name: "App Sliders", path: "/app-update/slider" }]
+          : []),
       ],
+    },
+    {
+      name: "Notification",
+      path: "/notification",
+      icon: IoIosNotificationsOutline,
     },
   ];
   useEffect(() => {

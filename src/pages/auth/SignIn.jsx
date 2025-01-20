@@ -50,6 +50,7 @@ const SignIn = () => {
         if (response.status == 200 && data.UserInfo && data.UserInfo.token) {
           localStorage.setItem("token", data.UserInfo.token);
           localStorage.setItem("username", data.UserInfo.user.name);
+          localStorage.setItem("user_type", data.UserInfo.user.user_type);
 
           const storedToken = localStorage.getItem("token");
           console.log("Stored Token:", storedToken);

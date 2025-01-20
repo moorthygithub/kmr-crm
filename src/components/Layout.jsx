@@ -5,7 +5,7 @@ import Sidebar from "./Sidebar";
 const Layout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
-
+  const usertype_id = localStorage.getItem("user_type");
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
@@ -42,6 +42,7 @@ const Layout = ({ children }) => {
         isOpen={isSidebarOpen}
         setIsOpen={setIsSidebarOpen}
         isCollapsed={isCollapsed}
+        usertype_id={usertype_id}
       />
       <main
         className={`transition-all duration-300 pt-16 ${
