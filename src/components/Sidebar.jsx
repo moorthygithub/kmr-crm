@@ -8,7 +8,7 @@ import {
   FiChevronRight,
 } from "react-icons/fi";
 import { IoIosNotificationsOutline } from "react-icons/io";
-
+import { CgWebsite } from "react-icons/cg";
 
 const Sidebar = ({ isOpen, setIsOpen, isCollapsed, usertype_id }) => {
   const [openSubmenu, setOpenSubmenu] = useState("");
@@ -48,6 +48,11 @@ const Sidebar = ({ isOpen, setIsOpen, isCollapsed, usertype_id }) => {
       path: "/notification",
       icon: IoIosNotificationsOutline,
     },
+    // {
+    //   name: "Website Enquiry",
+    //   path: "/website-enquiry",
+    //   icon: CgWebsite,
+    // },
   ];
   useEffect(() => {
     const currentSubmenu = menuItems.find((item) =>

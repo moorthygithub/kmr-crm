@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Router, Routes, Route } from "react-router-dom";
 import SignIn from "./pages/auth/SignIn";
 import Dashboard from "./pages/home/Dashboard";
 import LiveList from "./pages/appUpdates/live/LiveList";
@@ -32,10 +32,10 @@ import EditNotification from "./pages/Notification/EditNotification";
 import Slider from "./pages/appUpdates/slider/Slider";
 import AddSlider from "./pages/appUpdates/slider/AddSlider";
 import EditSlider from "./pages/appUpdates/slider/EditSlider";
-
+import WebsiteEnquiry from "./pages/websiteEnquiry/WebsiteEnquiry";
 function App() {
   return (
-    <Router>
+    <>
       <Toaster richColors position="top-right" />
       <Routes>
         <Route path="/" element={<SignIn />} />
@@ -94,8 +94,10 @@ function App() {
         <Route path="/notification" element={<Notification />} />
         <Route path="/notification/add" element={<AddNotification />} />
         <Route path="/notification/edit/:id" element={<EditNotification />} />
+        {/* //WebsiteEnquiry */}
+        <Route path="/website-enquiry" element={<WebsiteEnquiry />} />
       </Routes>
-    </Router>
+    </>
   );
 }
 
