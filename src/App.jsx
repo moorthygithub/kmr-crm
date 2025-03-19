@@ -10,7 +10,6 @@ import EditNewsList from "./pages/appUpdates/news/EditNewsList";
 import RatesList from "./pages/appUpdates/rates/RatesList";
 import AddRatesList from "./pages/appUpdates/rates/AddRatesList";
 import EditRatesList from "./pages/appUpdates/rates/EditRatesList";
-import CategoryList from "./pages/master/category/CategoryList";
 import SubCategory from "./pages/master/subCategory.jsx/SubCategory";
 import VendorList from "./pages/master/vendor/VendorList";
 import VendorUserList from "./pages/master/vendorUser/VendorUserList";
@@ -18,7 +17,6 @@ import EditLiveList from "./pages/appUpdates/live/EditLiveList";
 import ForgetPassword from "./pages/auth/ForgetPassword";
 import { Toaster } from "sonner";
 import AddCategory from "./pages/master/category/AddCategory";
-import EditCategory from "./pages/master/category/EditCategory";
 import AddSubCategory from "./pages/master/subCategory.jsx/AddSubCategory";
 import EditSubCategory from "./pages/master/subCategory.jsx/EditSubCategory";
 import EditVendor from "./pages/master/vendor/EditVendor";
@@ -33,9 +31,13 @@ import Slider from "./pages/appUpdates/slider/Slider";
 import AddSlider from "./pages/appUpdates/slider/AddSlider";
 import EditSlider from "./pages/appUpdates/slider/EditSlider";
 import WebsiteEnquiry from "./pages/websiteEnquiry/WebsiteEnquiry";
+import EditCategory from "./pages/Master/category/EditCategory";
+import CategoryList from "./pages/Master/category/CategoryList";
+import DisableRightClick from "./components/common/DisableRightClick";
 function App() {
   return (
     <>
+      {/* <DisableRightClick /> */}
       <Toaster richColors position="top-right" />
       <Routes>
         <Route path="/" element={<SignIn />} />

@@ -4,6 +4,8 @@ import axios from "axios";
 
 import mainLogo from "../../assets/kmrlive.png"; // Ensure the path is correct
 import { toast } from "sonner";
+import { ButtonCss } from "../../components/common/ButtonCss";
+import { Base_Url } from "../../config/BaseUrl";
 
 const ForgetPassword = () => {
   const [username, setUsername] = useState("");
@@ -18,16 +20,15 @@ const ForgetPassword = () => {
 
     if (email !== "" && username !== "") {
       axios({
-        url: `https://kmrlive.in/public/api/panel-send-password?username=${username}&email=${email}`,
+        url: `${Base_Url}/panel-send-password?username=${username}&email=${email}`,
         method: "POST",
         data: data,
       })
         .then((res) => {
           if (res.data.code == 200) {
             toast.success("New Password Sent to your Email");
-           
-              navigate("/signin");
-          
+
+            navigate("/signin");
           } else {
             toast.error("This email is not registered with us.");
           }
@@ -88,10 +89,7 @@ const ForgetPassword = () => {
           </div>
 
           {/* Reset Password Button */}
-          <button
-            onClick={onResetPassword}
-            className="w-full py-3 px-4 bg-accent-500 text-white font-medium rounded-lg hover:bg-accent-600 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 transition-all transform hover:scale-105 active:scale-95"
-          >
+          <button onClick={onResetPassword} className={`${ButtonCss} w-full`}>
             Reset Password
           </button>
 
@@ -108,7 +106,6 @@ const ForgetPassword = () => {
       </div>
 
       {/* Toast Container */}
-      
     </div>
   );
 };

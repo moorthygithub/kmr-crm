@@ -5,6 +5,7 @@ import axios from "axios";
 import { Base_Url } from "../../../config/BaseUrl";
 import { toast } from "sonner";
 import { ArrowBack } from "@mui/icons-material";
+import { ButtonCancel, ButtonCss } from "../../../components/common/ButtonCss";
 
 const AddVendorUser = () => {
   const navigate = useNavigate();
@@ -38,7 +39,9 @@ const AddVendorUser = () => {
     formData.append("email", vendorUser.email);
     formData.append("remarks", vendorUser.remarks);
 
-    const isFormValid = document.getElementById("addVendorUserForm").checkValidity();
+    const isFormValid = document
+      .getElementById("addVendorUserForm")
+      .checkValidity();
     document.getElementById("addVendorUserForm").reportValidity();
 
     if (isFormValid) {
@@ -57,9 +60,6 @@ const AddVendorUser = () => {
           if (res.data.code == 200) {
             navigate("/master/vendor-user");
             toast.success(res.data.msg || "Data inserted successfully");
-        
-             
-           
           } else {
             toast.error(res.data.msg || "Duplicate Entry");
             setIsButtonDisabled(false);
@@ -75,112 +75,112 @@ const AddVendorUser = () => {
 
   return (
     <Layout>
-        <div className="p-2 bg-gray-50 min-h-screen">
-              {/* Header */}
-              <div className="flex items-center mb-4 p-4 bg-white shadow-sm rounded-lg">
-                <button
-                  onClick={() => navigate("/master/vendor-user")}
-                  className="text-gray-600 hover:text-gray-900 transition-colors"
-                >
-                  <ArrowBack />
-                </button>
-                <h1 className="text-2xl font-semibold text-gray-800 ml-2">
-                  Create Vendor User
-                </h1>
+      <div className="p-2 bg-gray-50 min-h-screen">
+        {/* Header */}
+        <div className="flex items-center mb-4 p-4 bg-white shadow-sm rounded-lg">
+          <button
+            onClick={() => navigate("/master/vendor-user")}
+            className="text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            <ArrowBack />
+          </button>
+          <h1 className="text-2xl font-semibold text-gray-800 ml-2">
+            Create Vendor User
+          </h1>
+        </div>
+
+        {/* Form */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 w-full">
+          <form id="addVendorUserForm" autoComplete="off" onSubmit={onSubmit}>
+            <div className="space-y-4">
+              {/* Name Input */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Name <span className="text-red-700">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  value={vendorUser.name}
+                  onChange={onInputChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all"
+                  placeholder="Enter Name"
+                  required
+                />
               </div>
-      
-              {/* Form */}
-              <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 w-full">
-                <form id="addVendorUserForm" autoComplete="off" onSubmit={onSubmit}>
-                  <div className="space-y-4">
-                    {/* Name Input */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Name <span className="text-red-700">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        name="name"
-                        value={vendorUser.name}
-                        onChange={onInputChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all"
-                        placeholder="Enter Name"
-                        required
-                      />
-                    </div>
-      
-                    {/* Mobile Input */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Mobile <span className="text-red-700">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        name="mobile"
-                        value={vendorUser.mobile}
-                        onChange={onInputChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all"
-                        placeholder="Enter Mobile"
-                        inputMode="numeric"
-                        maxLength={10}
-                        minLength={10}
-                        required
-                      />
-                    </div>
-      
-                    {/* Email Input */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Email <span className="text-red-700">*</span>
-                      </label>
-                      <input
-                        type="email"
-                        name="email"
-                        value={vendorUser.email}
-                        onChange={onInputChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all"
-                        placeholder="Enter Email"
-                        required
-                      />
-                    </div>
-      
-                    {/* Remarks Input */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Remarks <span className="text-red-700">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        name="remarks"
-                        value={vendorUser.remarks}
-                        onChange={onInputChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all"
-                        placeholder="Enter Remarks"
-                        required
-                      />
-                    </div>
-                  </div>
-      
-                  {/* Buttons */}
-                  <div className="flex justify-end mt-8 space-x-4">
-                    <button
-                      type="button"
-                      onClick={() => navigate("/master/vendor-user")}
-                      className="px-6 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isButtonDisabled}
-                      className="px-6 py-2 text-sm font-medium text-white bg-accent-500 rounded-lg hover:bg-accent-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
-                    >
-                      {loading ? "Submitting..." : "Submit"}
-                    </button>
-                  </div>
-                </form>
+
+              {/* Mobile Input */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Mobile <span className="text-red-700">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="mobile"
+                  value={vendorUser.mobile}
+                  onChange={onInputChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all"
+                  placeholder="Enter Mobile"
+                  inputMode="numeric"
+                  maxLength={10}
+                  minLength={10}
+                  required
+                />
+              </div>
+
+              {/* Email Input */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Email <span className="text-red-700">*</span>
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={vendorUser.email}
+                  onChange={onInputChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all"
+                  placeholder="Enter Email"
+                  required
+                />
+              </div>
+
+              {/* Remarks Input */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Remarks <span className="text-red-700">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="remarks"
+                  value={vendorUser.remarks}
+                  onChange={onInputChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all"
+                  placeholder="Enter Remarks"
+                  required
+                />
               </div>
             </div>
+
+            {/* Buttons */}
+            <div className="flex justify-end mt-8 space-x-4">
+              <button
+                type="button"
+                onClick={() => navigate("/master/vendor-user")}
+                className={ButtonCancel}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={isButtonDisabled}
+                className={ButtonCss}
+              >
+                {loading ? "Submitting..." : "Submit"}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </Layout>
   );
 };

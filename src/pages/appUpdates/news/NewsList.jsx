@@ -6,7 +6,10 @@ import { Tooltip, CircularProgress, IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import MUIDataTable from "mui-datatables";
 import moment from "moment";
-import { Base_Url } from "../../../config/BaseUrl";
+import { Base_Url, Image_Url, No_Image_Url } from "../../../config/BaseUrl";
+import LoaderComponent from "../../../components/common/LoaderComponent";
+import { encryptId } from "../../../components/common/EncryptionDecryption";
+import { ButtonCss } from "../../../components/common/ButtonCss";
 
 const NewsList = () => {
   const [news, setNews] = useState([]);
@@ -58,11 +61,7 @@ const NewsList = () => {
           sort: false,
           customBodyRender: (value) => (
             <img
-              src={
-                value
-                  ? `https://kmrlive.in/storage/app/public/News/${value}`
-                  : "https://kmrlive.in/storage/app/public/no_image.jpg"
-              }
+              src={value ? `${Image_Url}/News/${value}` : `${No_Image_Url}`}
               alt="News"
               className="w-10 h-10 object-cover rounded"
             />
@@ -76,9 +75,7 @@ const NewsList = () => {
           filter: true,
           sort: false,
           customBodyRender: (value) => (
-            <div className="text-sm">
-              {moment(value).format("DD-MM-YYYY")}
-            </div>
+            <div className="text-sm">{moment(value).format("DD-MM-YYYY")}</div>
           ),
         },
       },
@@ -115,9 +112,17 @@ const NewsList = () => {
           customBodyRender: (value) => (
             <Tooltip title="Edit" placement="top">
               <IconButton>
-                <Link to={`/app-update/news/edit/${value}`}>
+                <span
+                  onClick={() => {
+                    navigate(
+                      `/app-update/news/edit/${encodeURIComponent(
+                        encryptId(value)
+                      )}`
+                    );
+                  }}
+                >
                   <EditIcon className="text-gray-600 hover:text-accent-500" />
-                </Link>
+                </span>
               </IconButton>
             </Tooltip>
           ),
@@ -131,18 +136,14 @@ const NewsList = () => {
   const options = {
     selectableRows: "none",
     elevation: 0,
-  
+
     responsive: "standard",
     viewColumns: false,
     download: false,
     print: false,
     textLabels: {
       body: {
-        noMatch: loading ? (
-          <CircularProgress className="text-accent-500" />
-        ) : (
-          "Sorry, no data available"
-        ),
+        noMatch: loading ? <LoaderComponent /> : "Sorry, no data available",
       },
     },
     setRowProps: (row) => ({
@@ -154,7 +155,7 @@ const NewsList = () => {
     customToolbar: () => (
       <button
         onClick={() => navigate("/app-update/news/add")}
-        className="bg-accent-500 text-white px-4 py-2 rounded-lg hover:bg-accent-600 transition-colors text-sm font-medium"
+        className={ButtonCss}
       >
         + Add News
       </button>

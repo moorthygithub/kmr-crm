@@ -1,14 +1,13 @@
-import { useState, useEffect } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 import {
-  FiHome,
-  FiFolder,
   FiCheckSquare,
   FiChevronDown,
   FiChevronRight,
+  FiFolder,
+  FiHome,
 } from "react-icons/fi";
 import { IoIosNotificationsOutline } from "react-icons/io";
-import { CgWebsite } from "react-icons/cg";
+import { NavLink, useLocation } from "react-router-dom";
 
 const Sidebar = ({ isOpen, setIsOpen, isCollapsed, usertype_id }) => {
   const [openSubmenu, setOpenSubmenu] = useState("");
@@ -84,9 +83,9 @@ const Sidebar = ({ isOpen, setIsOpen, isCollapsed, usertype_id }) => {
       )}
 
       <div
-        className={`fixed left-0 top-16 h-[calc(100vh-4rem)] bg-white border-r border-gray-200 transition-all duration-300 ease-in-out
+        className={`fixed left-0 top-16 h-[calc(100vh-4.5rem)] bg-white border-r border-gray-200 transition-all duration-300 ease-in-out
         ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
-        ${isCollapsed ? "lg:w-16" : "lg:w-64"}
+        ${isCollapsed ? "lg:w-[4.5rem]" : "lg:w-64"}
         w-64 z-40 overflow-y-auto`}
       >
         <div className="p-4">

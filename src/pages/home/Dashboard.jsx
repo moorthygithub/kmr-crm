@@ -23,6 +23,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Moment from "moment";
 import { Base_Url } from "../../config/BaseUrl";
+import LoaderComponent from "../../components/common/LoaderComponent";
 
 const Dashboard = () => {
   const [results, setResults] = useState({});
@@ -122,7 +123,7 @@ const Dashboard = () => {
 
   return (
     <Layout>
-      <div className="space-y-6 p-6">
+      <div className="space-y-6">
         {/* Welcome Section */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
@@ -208,8 +209,8 @@ const Dashboard = () => {
 
             <Collapse in={!isMinimized}>
               {loading ? (
-                <div className="flex justify-center p-6">
-                  <CircularProgress />
+                <div className="flex justify-center">
+                  <LoaderComponent />{" "}
                 </div>
               ) : (
                 <>

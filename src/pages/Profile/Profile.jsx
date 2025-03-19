@@ -1,23 +1,35 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { toast } from "sonner";
-import Layout from "../../components/Layout";
 import { Lock } from "@mui/icons-material";
 import {
   Dialog,
-  DialogTitle,
-  DialogContent,
   DialogActions,
-  Button as MUIButton,
-  TextField as MUITextField,
+  DialogContent,
+  DialogTitle,
+  Slide,
 } from "@mui/material";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { ButtonCancel, ButtonCss } from "../../components/common/ButtonCss";
+import { EditLoaderComponent } from "../../components/common/LoaderComponent";
+import Layout from "../../components/Layout";
 import { Base_Url } from "../../config/BaseUrl";
 
 // Reusable Input Component
-const InputField = ({ label, value, onChange, type = "text", placeholder, required, disabled, validate }) => (
+const InputField = ({
+  label,
+  value,
+  onChange,
+  type = "text",
+  placeholder,
+  required,
+  disabled,
+  validate,
+}) => (
   <div>
-    <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>
+    <label className="block text-sm font-medium text-gray-700 mb-2">
+      {label}
+    </label>
     <input
       type={type}
       value={value}
@@ -33,14 +45,32 @@ const InputField = ({ label, value, onChange, type = "text", placeholder, requir
     />
   </div>
 );
-
-// Reusable Dialog Component
-const ChangePasswordDialog = ({ open, onClose, onChangePassword, oldPassword, setOldPassword, newPassword, setNewPassword, confirmPassword, setConfirmPassword }) => (
-  <Dialog open={open} onClose={onClose}>
+//Chnage Password Dialog
+const ChangePasswordDialog = ({
+  open,
+  onClose,
+  onChangePassword,
+  oldPassword,
+  setOldPassword,
+  newPassword,
+  setNewPassword,
+  confirmPassword,
+  setConfirmPassword,
+}) => (
+  <Dialog
+    open={open}
+    onClose={onClose}
+    fullWidth
+    TransitionComponent={Slide}
+    transitionDuration={500}
+    sx={{
+      backdropFilter: "blur(4px)",
+    }}
+  >
     <DialogTitle>Change Password</DialogTitle>
     <DialogContent>
       <form onSubmit={onChangePassword} className="space-y-4">
-        <MUITextField
+        <InputField
           label="Old Password"
           type="password"
           fullWidth
@@ -49,7 +79,7 @@ const ChangePasswordDialog = ({ open, onClose, onChangePassword, oldPassword, se
           margin="normal"
           required
         />
-        <MUITextField
+        <InputField
           label="New Password"
           type="password"
           fullWidth
@@ -58,7 +88,7 @@ const ChangePasswordDialog = ({ open, onClose, onChangePassword, oldPassword, se
           margin="normal"
           required
         />
-        <MUITextField
+        <InputField
           label="Confirm Password"
           type="password"
           fullWidth
@@ -70,12 +100,12 @@ const ChangePasswordDialog = ({ open, onClose, onChangePassword, oldPassword, se
       </form>
     </DialogContent>
     <DialogActions>
-      <MUIButton onClick={onClose} color="secondary">
+      <button onClick={onClose} className={ButtonCancel}>
         Cancel
-      </MUIButton>
-      <MUIButton onClick={onChangePassword} color="primary">
+      </button>
+      <button onClick={onChangePassword} className={ButtonCss}>
         Change Password
-      </MUIButton>
+      </button>
     </DialogActions>
   </Dialog>
 );
@@ -89,10 +119,13 @@ const Profile = () => {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [loadingdata, setLoadingData] = useState(false);
 
   // Fetch profile data
   useEffect(() => {
     const fetchProfile = async () => {
+      setLoadingData(true);
+
       try {
         const response = await axios.get(`${Base_Url}/panel-fetch-profile`, {
           headers: {
@@ -105,6 +138,8 @@ const Profile = () => {
       } catch (error) {
         console.error("Error fetching profile data:", error);
         toast.error("Failed to fetch profile data.");
+      } finally {
+        setLoadingData(false);
       }
     };
 
@@ -139,11 +174,15 @@ const Profile = () => {
     };
 
     try {
-      const response = await axios.post(`${Base_Url}/panel-update-profile`, data, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const response = await axios.post(
+        `${Base_Url}/panel-update-profile`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
 
       if (response.data.code === 401) {
         toast.error("Duplicate Entry of Name");
@@ -180,11 +219,15 @@ const Profile = () => {
     };
 
     try {
-      const response = await axios.post(`${Base_Url}/panel-change-password`, data, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const response = await axios.post(
+        `${Base_Url}/panel-change-password`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
 
       if (response.data.code === 200) {
         toast.success("Password Updated Successfully!");
@@ -203,78 +246,68 @@ const Profile = () => {
   };
 
   // Validation functions
-  const validateOnlyText = (inputtxt) => /^[A-Za-z ]+$/.test(inputtxt) || inputtxt === "";
-  const validateOnlyDigits = (inputtxt) => /^\d+$/.test(inputtxt) || inputtxt.length === 0;
+  const validateOnlyText = (inputtxt) =>
+    /^[A-Za-z ]+$/.test(inputtxt) || inputtxt === "";
+  const validateOnlyDigits = (inputtxt) =>
+    /^\d+$/.test(inputtxt) || inputtxt.length === 0;
 
   return (
     <Layout>
       <div className="p-2 bg-gray-50 min-h-screen">
-        {/* Header */}
-        <div className="flex items-center mb-4 p-4 bg-white shadow-sm rounded-lg">
+        <div className="flex items-center mb-4 p-4 bg-white shadow-sm rounded-lg space-x-4">
           <h1 className="text-2xl font-semibold text-gray-800">Profile</h1>
+          <button onClick={() => setOpenDialog(true)} className={ButtonCss}>
+            <Lock className="w-4 h-4 mr-2" />
+            <span className="text-sm font-medium">Change Password</span>
+          </button>
         </div>
-
-        {/* Profile Form */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-          <div className="mb-6">
-            <h2 className="text-lg font-semibold text-gray-700 mb-2">Basic Info</h2>
-            <hr className="mb-4" />
-          </div>
-
-          <form onSubmit={onUpdateProfile} className="space-y-4">
-            <InputField
-              label="Full Name"
-              value={firstName}
-              onChange={setFirstName}
-              placeholder="Enter Full Name"
-              required
-              disabled
-              validate={validateOnlyText}
-            />
-            <InputField
-              label="Phone"
-              value={phone}
-              onChange={setPhone}
-              placeholder="Enter Phone"
-              required
-              validate={validateOnlyDigits}
-            />
-            <InputField
-              label="Email"
-              value={email}
-              onChange={setEmail}
-              type="email"
-              placeholder="Enter Email"
-              required
-            />
-
-            {/* Update Profile Button */}
-            <div className="flex justify-end">
-              <button
-                type="submit"
-                className="px-6 py-2 text-sm font-medium text-white bg-accent-500 rounded-lg hover:bg-accent-600 transition-colors"
-              >
-                Update Profile
-              </button>
+        {loadingdata ? (
+          <EditLoaderComponent />
+        ) : (
+          <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
+            <div className="mb-6">
+              <h2 className="text-lg font-semibold text-gray-700 mb-2">
+                Basic Info
+              </h2>
+              <hr className="mb-4" />
             </div>
-          </form>
-        </div>
 
-        {/* Change Password Section */}
-        <div className="mt-6 bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-700">Change Password</h2>
-            <button
-              onClick={() => setOpenDialog(true)}
-              className="flex items-center text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              <Lock className="w-5 h-5 mr-2" />
-              <span className="text-sm font-medium">Change Password</span>
-            </button>
+            <form onSubmit={onUpdateProfile} className="space-y-4">
+              <InputField
+                label="Full Name"
+                value={firstName}
+                onChange={setFirstName}
+                placeholder="Enter Full Name"
+                required
+                disabled
+                validate={validateOnlyText}
+              />
+              <InputField
+                label="Phone"
+                value={phone}
+                onChange={setPhone}
+                placeholder="Enter Phone"
+                required
+                validate={validateOnlyDigits}
+              />
+              <InputField
+                label="Email"
+                value={email}
+                onChange={setEmail}
+                type="email"
+                placeholder="Enter Email"
+                required
+              />
+
+              {/* Update Profile Button */}
+              <div className="flex justify-end">
+                <button type="submit" className={ButtonCss}>
+                  Update Profile
+                </button>
+              </div>
+            </form>
           </div>
-        </div>
-
-        {/* Change Password Dialog */}
+        )}
         <ChangePasswordDialog
           open={openDialog}
           onClose={() => setOpenDialog(false)}

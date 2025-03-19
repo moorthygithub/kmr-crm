@@ -7,6 +7,9 @@ import MUIDataTable from "mui-datatables";
 import { CircularProgress, Tooltip } from "@mui/material";
 
 import EditIcon from "@mui/icons-material/Edit";
+import LoaderComponent from "../../../components/common/LoaderComponent";
+import { encryptId } from "../../../components/common/EncryptionDecryption";
+import { ButtonCss } from "../../../components/common/ButtonCss";
 
 const VendorUserList = () => {
   const [vendorUserData, setVendorUserData] = useState([]);
@@ -93,7 +96,14 @@ const VendorUserList = () => {
           customBodyRender: (value) => (
             <Tooltip title="Edit" placement="top">
               <button
-                onClick={() => navigate(`/master/vendor-user/edit/${value}`)}
+                // onClick={() => navigate(`/master/vendor-user/edit/${value}`)}
+                onClick={() => {
+                  navigate(
+                    `/master/vendor-user/edit/${encodeURIComponent(
+                      encryptId(value)
+                    )}`
+                  );
+                }}
                 className="text-gray-500 hover:text-accent-500 transition-colors"
               >
                 <EditIcon className="w-4 h-4" />
@@ -116,11 +126,7 @@ const VendorUserList = () => {
     print: false,
     textLabels: {
       body: {
-        noMatch: loading ? (
-          <CircularProgress className="text-accent-500" />
-        ) : (
-          "Sorry, no data available"
-        ),
+        noMatch: loading ? <LoaderComponent /> : "Sorry, no data available",
       },
     },
     setRowProps: (row) => ({
@@ -132,7 +138,7 @@ const VendorUserList = () => {
     customToolbar: () => (
       <button
         onClick={() => navigate("/master/vendor-user/add")}
-        className="bg-accent-500 text-white px-4 py-2 rounded-lg hover:bg-accent-600 transition-colors text-sm font-medium"
+        className={ButtonCss}
       >
         + Add Vendor User
       </button>

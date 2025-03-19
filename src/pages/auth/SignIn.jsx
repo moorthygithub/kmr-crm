@@ -1,26 +1,26 @@
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import Checkbox from "@mui/material/Checkbox";
+import axios from "axios";
+import { useFormik } from "formik";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Checkbox from "@mui/material/Checkbox";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import axios from "axios";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { toast } from "sonner";
+import * as Yup from "yup";
 import siginLogo from "../../assets/kmrlive.png";
+import { ButtonCss } from "../../components/common/ButtonCss";
+import { Base_Url } from "../../config/BaseUrl";
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
-  
   const validationSchema = Yup.object({
-    email: Yup.string().required("Email is required"),
+    email: Yup.string().required("UserName is required"),
     password: Yup.string()
       .min(2, "Password should be of minimum 2 characters length")
       .required("Password is required"),
   });
-
 
   const formik = useFormik({
     initialValues: {
@@ -32,7 +32,7 @@ const SignIn = () => {
       setIsLoading(true);
       try {
         const response = await axios.post(
-          "https://kmrlive.in/public/api/panel-login",
+          `${Base_Url}/panel-login`,
           {
             username: values.email,
             password: values.password,
@@ -73,7 +73,6 @@ const SignIn = () => {
       }
     },
   });
-
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -129,7 +128,7 @@ const SignIn = () => {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-colors placeholder-gray-400"
-                placeholder="Enter your email"
+                placeholder="Enter your Username"
               />
               {formik.touched.email && formik.errors.email && (
                 <p className="text-sm text-red-500 mt-1">
@@ -171,8 +170,13 @@ const SignIn = () => {
               )}
             </div>
             <div className="flex items-center justify-between">
-              <div   className="flex items-center">
-                <Checkbox   tabIndex={-1} id="rememberMe" name="rememberMe" color="primary" />
+              <div className="flex items-center">
+                <Checkbox
+                  tabIndex={-1}
+                  id="rememberMe"
+                  name="rememberMe"
+                  color="primary"
+                />
                 <label
                   htmlFor="rememberMe"
                   className="ml-2 text-sm text-gray-700"
@@ -191,7 +195,7 @@ const SignIn = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 px-4 bg-accent-500 text-white font-medium rounded-lg hover:bg-accent-600 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 transition-all transform hover:scale-105 active:scale-95"
+              className={`${ButtonCss} w-full`}
             >
               {isLoading ? "Signing In..." : "Sign In"}
             </button>
