@@ -27,3 +27,20 @@ export const decryptId = (encryptedId) => {
     return "";
   }
 };
+//Token Useer Name and User Id encrypted
+export const encryptData = (data) => {
+  if (!data) return "";
+  return CryptoJS.AES.encrypt(data.toString(), secretKey).toString();
+};
+
+// Decrypt data
+export const decryptData = (encryptedData) => {
+  try {
+    if (!encryptedData) return "";
+    const bytes = CryptoJS.AES.decrypt(encryptedData, secretKey);
+    return bytes.toString(CryptoJS.enc.Utf8);
+  } catch (error) {
+    console.error("Decryption Error:", error);
+    return "";
+  }
+};

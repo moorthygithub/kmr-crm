@@ -14,6 +14,8 @@ import { ButtonCancel, ButtonCss } from "../../components/common/ButtonCss";
 import { EditLoaderComponent } from "../../components/common/LoaderComponent";
 import Layout from "../../components/Layout";
 import { Base_Url } from "../../config/BaseUrl";
+import { decryptData } from "../../components/common/EncryptionDecryption";
+import { FETCH_PROFILE_DATA } from "../api/UseApi";
 
 // Reusable Input Component
 const InputField = ({
@@ -121,17 +123,14 @@ const Profile = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loadingdata, setLoadingData] = useState(false);
 
-  // Fetch profile data
+  const decryptedUsername = localStorage.getItem("username");
+  const username = decryptData(decryptedUsername);
   useEffect(() => {
     const fetchProfile = async () => {
       setLoadingData(true);
 
       try {
-        const response = await axios.get(`${Base_Url}/panel-fetch-profile`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const response = await FETCH_PROFILE_DATA();
         setFirstName(response.data.user.name);
         setPhone(response.data.user.mobile);
         setEmail(response.data.user.email);
@@ -215,7 +214,7 @@ const Profile = () => {
     const data = {
       old_password: oldPassword,
       password: newPassword,
-      username: localStorage.getItem("username"),
+      username: username,
     };
 
     try {

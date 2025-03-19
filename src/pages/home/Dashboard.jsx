@@ -1,29 +1,27 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../../components/Layout";
-import axios from "axios";
 
-import CountUp from "react-countup";
+import CloseIcon from "@mui/icons-material/Close";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import MinimizeIcon from "@mui/icons-material/Minimize";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import {
+  Collapse,
+  IconButton,
   Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
-  TableRow,
-  IconButton,
-  Box,
-  CircularProgress,
-  Collapse,
   TablePagination,
+  TableRow,
 } from "@mui/material";
-import RefreshIcon from "@mui/icons-material/Refresh";
-import MinimizeIcon from "@mui/icons-material/Minimize";
-import CloseIcon from "@mui/icons-material/Close";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Moment from "moment";
-import { Base_Url } from "../../config/BaseUrl";
+import CountUp from "react-countup";
 import LoaderComponent from "../../components/common/LoaderComponent";
+import { FETCH_DASHBOARD_DATA } from "../api/UseApi";
+import { Finacal_Year } from "../../config/BaseUrl";
 
 const Dashboard = () => {
   const [results, setResults] = useState({});
@@ -34,42 +32,21 @@ const Dashboard = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const dateyear = "2024";
-
   // Fetch dashboard data
+  const fetchData = async () => {
+    try {
+      const response = await FETCH_DASHBOARD_DATA(Finacal_Year);
+      setResults(response.data);
+      setRecentOrders(response.data.validity_user);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios({
-          url: `${Base_Url}/panel-fetch-dashboard-data/${dateyear}`,
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-        setResults(response.data);
-        setRecentOrders(response.data.validity_user);
-        setLoading(false);
-
-        // Store data in localStorage
-        localStorage.setItem("totalUser_count", response.data.totalUser_count);
-        localStorage.setItem(
-          "totalInactiveUser_count",
-          response.data.totalInactiveUser_count
-        );
-        localStorage.setItem(
-          "totalTrialUser_count",
-          response.data.totalTrialUser_count
-        );
-        localStorage.setItem("renewal_count", response.data.renewal_count);
-      } catch (error) {
-        console.error("Error fetching dashboard data:", error);
-        setLoading(false);
-      }
-    };
-
     fetchData();
-  }, [dateyear]);
+  }, [Finacal_Year]);
 
   // Handle table pagination
   const handleChangePage = (event, newPage) => {
@@ -82,41 +59,18 @@ const Dashboard = () => {
   };
 
   // Handle table actions
-  const handleReload = () => {
+  const handleReload = async () => {
     setLoading(true);
-    axios({
-      url: `${Base_Url}/panel-fetch-dashboard-data/${dateyear}`,
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    })
-      .then((res) => {
-        setRecentOrders(res.data.validity_user);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error reloading data:", error);
-        setLoading(false);
-      });
+    try {
+      const response = await FETCH_DASHBOARD_DATA(dateyear);
+      setResults(response.data);
+      setRecentOrders(response.data.validity_user);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+      setLoading(false);
+    }
   };
-
-  const handleMinimize = () => {
-    setIsMinimized(!isMinimized);
-  };
-
-  const handleClose = () => {
-    setIsClosed(true);
-  };
-
-  // Get data from localStorage
-  const totalTrialUserCount = localStorage.getItem("totalTrialUser_count") || 0;
-  const totalInactiveUserCount =
-    localStorage.getItem("totalInactiveUser_count") || 0;
-  const totalUserCount = localStorage.getItem("totalUser_count") || 0;
-  const renewalCount = localStorage.getItem("renewal_count") || 0;
-
-  // Displayed orders for pagination
   const displayedOrders = recentOrders
     ? recentOrders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
     : [];
@@ -140,7 +94,7 @@ const Dashboard = () => {
             <p className="text-3xl font-bold text-green-500 mt-2">
               <CountUp
                 start={0}
-                end={totalTrialUserCount}
+                end={results?.totalTrialUser_count || 0}
                 duration={2.5}
                 useEasing={true}
               />
@@ -153,7 +107,7 @@ const Dashboard = () => {
             <p className="text-3xl font-bold text-blue-500 mt-2">
               <CountUp
                 start={0}
-                end={totalUserCount}
+                end={results?.totalUser_count || 0}
                 duration={2.5}
                 useEasing={true}
               />
@@ -166,7 +120,7 @@ const Dashboard = () => {
             <p className="text-3xl font-bold text-yellow-500 mt-2">
               <CountUp
                 start={0}
-                end={renewalCount}
+                end={results?.renewal_count || 0}
                 duration={2.5}
                 useEasing={true}
               />
@@ -179,7 +133,7 @@ const Dashboard = () => {
             <p className="text-3xl font-bold text-red-500 mt-2">
               <CountUp
                 start={0}
-                end={totalInactiveUserCount}
+                end={results?.totalInactiveUser_count || 0}
                 duration={2.5}
                 useEasing={true}
               />
@@ -195,13 +149,16 @@ const Dashboard = () => {
                 Renewal Dues
               </h2>
               <div className="flex items-center space-x-2">
-                <IconButton size="small" onClick={handleMinimize}>
+                <IconButton
+                  size="small"
+                  onClick={() => setIsMinimized(!isMinimized)}
+                >
                   {isMinimized ? <ExpandMoreIcon /> : <MinimizeIcon />}
                 </IconButton>
                 <IconButton size="small" onClick={handleReload}>
                   <RefreshIcon />
                 </IconButton>
-                <IconButton size="small" onClick={handleClose}>
+                <IconButton size="small" onClick={() => setIsClosed(true)}>
                   <CloseIcon />
                 </IconButton>
               </div>
