@@ -8,6 +8,7 @@ import MUIDataTable from "mui-datatables";
 import moment from "moment";
 import { Base_Url } from "../../../config/BaseUrl";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import { ButtonCss } from "../../../components/common/ButtonCss";
 
 const SpotList = () => {
   const [spotRates, setSpotRates] = useState([]);
@@ -136,7 +137,7 @@ const SpotList = () => {
     customToolbar: () => (
       <button
         onClick={() => navigate("/app-update/spot/add")}
-        className="bg-accent-500 text-white px-4 py-2 rounded-lg hover:bg-accent-600 transition-colors text-sm font-medium"
+        className={ButtonCss}
       >
         + Add Vendors Spot Rates List
       </button>

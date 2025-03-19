@@ -8,6 +8,8 @@ import MUIDataTable from "mui-datatables";
 import EditIcon from "@mui/icons-material/Edit";
 import moment from "moment/moment";
 import LoaderComponent from "../../components/common/LoaderComponent";
+import { encryptId } from "../../components/common/EncryptionDecryption";
+import { ButtonCss } from "../../components/common/ButtonCss";
 const Notification = () => {
   const [loading, setLoading] = useState(true);
   const [NotificationData, setNotificationData] = useState([]);
@@ -116,9 +118,16 @@ const Notification = () => {
           sort: false,
           customBodyRender: (value) => (
             <Tooltip title="Edit" placement="top">
-              <Link to={`/notification/edit/${value}`}>
+              <span
+                onClick={() => {
+                  navigate(
+                    `/notification/edit/${encodeURIComponent(encryptId(value))}`
+                  );
+                }}
+                className="cursor-pointer"
+              >
                 <EditIcon className="text-gray-600 hover:text-accent-500" />
-              </Link>
+              </span>
             </Tooltip>
           ),
         },
@@ -149,7 +158,7 @@ const Notification = () => {
     customToolbar: () => (
       <button
         onClick={() => navigate("/notification/add")}
-        className="bg-accent-500 text-white px-4 py-2 rounded-lg hover:bg-accent-600 transition-colors text-sm font-medium"
+        className={ButtonCss}
       >
         + Add Notification
       </button>

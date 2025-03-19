@@ -123,7 +123,7 @@ const Dashboard = () => {
 
   return (
     <Layout>
-      <div className="space-y-6 p-6">
+      <div className="space-y-6">
         {/* Welcome Section */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>

@@ -8,6 +8,7 @@ import MUIDataTable from "mui-datatables";
 import { Base_Url } from "../../../config/BaseUrl";
 import moment from "moment";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import { encryptId } from "../../../components/common/EncryptionDecryption";
 
 const LiveList = () => {
   const [liveList, setLiveList] = useState([]);
@@ -196,7 +197,11 @@ const LiveList = () => {
           customBodyRender: (id) => (
             <Tooltip title="Edit" placement="top">
               <button
-                onClick={() => navigate(`/app-update/live/edit/${id}`)}
+                onClick={() => {
+                  navigate(
+                    `/app-update/live/edit/${encodeURIComponent(encryptId(id))}`
+                  );
+                }}
                 className="text-gray-500 hover:text-accent-500 transition-colors"
               >
                 <EditIcon className="w-4 h-4" />

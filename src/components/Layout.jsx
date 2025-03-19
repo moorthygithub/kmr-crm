@@ -55,7 +55,7 @@ const Layout = ({ children }) => {
             onClick={() => setIsSidebarOpen(false)}
           />
         )}
-        <div className="p-6 relative">{children}</div>
+        <div className="p-3 relative md:mx-1">{children}</div>
       </main>
     </div>
   );

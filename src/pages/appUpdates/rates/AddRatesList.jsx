@@ -6,6 +6,11 @@ import axios from "axios";
 import { ArrowBack } from "@mui/icons-material";
 import { Base_Url } from "../../../config/BaseUrl";
 import { toast } from "sonner";
+import {
+  ButtonCancel,
+  ButtonCss,
+  ButtonRemove,
+} from "../../../components/common/ButtonCss";
 
 const AddRatesList = () => {
   const navigate = useNavigate();
@@ -135,8 +140,6 @@ const AddRatesList = () => {
       );
 
       if (response.data.code == 200) {
-     
-
         navigate("/app-update/rates");
         toast.success(response.data.msg || "Data inserted successfully");
       } else if (response.data.code == 403) {
@@ -365,7 +368,7 @@ const AddRatesList = () => {
                     <button
                       type="button"
                       onClick={() => removeUser(index)}
-                      className="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-lg hover:bg-red-600 transition-colors"
+                      className={ButtonRemove}
                     >
                       Remove
                     </button>
@@ -375,11 +378,7 @@ const AddRatesList = () => {
 
               {/* Add More Button */}
               <div className="flex justify-start">
-                <button
-                  type="button"
-                  onClick={addItem}
-                  className="px-6 py-2 text-sm font-medium text-white bg-accent-500 rounded-lg hover:bg-accent-600 transition-colors"
-                >
+                <button type="button" onClick={addItem} className={ButtonCss}>
                   Add More
                 </button>
               </div>
@@ -390,14 +389,14 @@ const AddRatesList = () => {
               <button
                 type="button"
                 onClick={() => navigate("/app-update/rates")}
-                className="px-6 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                className={ButtonCancel}
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isButtonDisabled}
-                className="px-6 py-2 text-sm font-medium text-white bg-accent-500 rounded-lg hover:bg-accent-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+                className={ButtonCss}
               >
                 {loading ? "Submitting..." : "Submit"}
               </button>

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Base_Url } from "../../../config/BaseUrl";
 import axios from "axios";
 import { ArrowBack } from "@mui/icons-material";
+import { ButtonCancel, ButtonCss } from "../../../components/common/ButtonCss";
 
 const AddSubCategory = () => {
   const navigate = useNavigate();
@@ -171,14 +172,14 @@ const AddSubCategory = () => {
               <button
                 type="button"
                 onClick={() => navigate("/master/subcategory")}
-                className="px-6 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                className={ButtonCancel}
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isButtonDisabled}
-                className="px-6 py-2 text-sm font-medium text-white bg-accent-500 rounded-lg hover:bg-accent-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+                className={ButtonCss}
               >
                 {loading ? "Submitting..." : "Submit"}
               </button>

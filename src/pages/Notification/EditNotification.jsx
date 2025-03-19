@@ -5,7 +5,12 @@ import axios from "axios";
 import { Base_Url, Image_Url, No_Image_Url } from "../../config/BaseUrl";
 import { toast } from "sonner";
 import { ArrowBack } from "@mui/icons-material";
-import { ImageLoaderComponent } from "../../components/common/LoaderComponent";
+import {
+  EditLoaderComponent,
+  ImageLoaderComponent,
+} from "../../components/common/LoaderComponent";
+import { decryptId } from "../../components/common/EncryptionDecryption";
+import { ButtonCancel, ButtonCss } from "../../components/common/ButtonCss";
 
 const statusOptions = [
   { value: "Active", label: "Active" },
@@ -14,6 +19,7 @@ const statusOptions = [
 const EditNotification = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const decryptedId = decryptId(id);
 
   const [notification, setNotification] = useState({
     notification_heading: "",
@@ -26,12 +32,15 @@ const EditNotification = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
   const [imageloading, setImageLoading] = useState(true);
+  const [loadingdata, setLoadingData] = useState(false);
 
   useEffect(() => {
+    setLoadingData(true);
+
     const fetchNotification = async () => {
       try {
         const response = await axios.get(
-          `${Base_Url}/panel-fetch-notification-by-id/${id}`,
+          `${Base_Url}/panel-fetch-notification-by-id/${decryptedId}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -42,11 +51,13 @@ const EditNotification = () => {
       } catch (error) {
         console.error("Error fetching notification data:", error);
         toast.error("Failed to fetch notification data.");
+      } finally {
+        setLoadingData(false);
       }
     };
 
     fetchNotification();
-  }, [id]);
+  }, [decryptedId]);
 
   // Handle input change
   const onInputChange = (e) => {
@@ -80,7 +91,7 @@ const EditNotification = () => {
       setIsButtonDisabled(true);
       setLoading(true);
       const response = await axios.post(
-        `${Base_Url}/panel-update-notification/${id}?_method=PUT`,
+        `${Base_Url}/panel-update-notification/${decryptedId}?_method=PUT`,
         formData,
         {
           headers: {
@@ -120,128 +131,118 @@ const EditNotification = () => {
             Edit Notication
           </h1>
         </div>
+        {loadingdata ? (
+          <EditLoaderComponent />
+        ) : (
+          <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 w-full">
+            <form autoComplete="off" onSubmit={onSubmit}>
+              <div className="space-y-6 lg:space-y-0 flex flex-col lg:flex-row gap-0 lg:gap-2">
+                <div className="relative w-48 h-48 flex justify-center items-center">
+                  {imageloading && <ImageLoaderComponent />}
 
-        {/* Form */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 w-full">
-          <form autoComplete="off" onSubmit={onSubmit}>
-            <div className="space-y-6 lg:space-y-0 flex flex-col lg:flex-row gap-0 lg:gap-2">
-              {/* <div className="flex justify-start">
-                <img
-                  src={
-                    notification?.notification_image === null ||
-                    notification?.notification_image === ""
-                      ? `${No_Image_Url}`
-                      : `${Image_Url}/notification_images/${notification.notification_image}?t=${RandomValue}`
-                  }
-                  alt="Notification"
-                  className="w-48 h-48 object-cover rounded-lg"
-                />
-              </div> */}
-              <div className="relative w-48 h-48 flex justify-center items-center">
-                {imageloading && <ImageLoaderComponent />}
-
-                <img
-                  src={
-                    notification?.notification_image === null ||
-                    notification?.notification_image === ""
-                      ? `${No_Image_Url}`
-                      : `${Image_Url}/notification_images/${notification.notification_image}?t=${RandomValue}`
-                  }
-                  alt="Notification"
-                  className={`w-48 h-48 object-cover rounded-lg transition-opacity duration-300 ${
-                    imageloading ? "opacity-0" : "opacity-100"
-                  }`}
-                  onLoad={() => setImageLoading(false)}
-                />
-              </div>
-
-              <div className="flex-1">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Heading <span className="text-red-700">*</span>
-                  </label>
-                  <textarea
-                    name="notification_heading"
-                    value={notification.notification_heading}
-                    onChange={onInputChange}
-                    rows={4}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all"
-                    placeholder="Enter Heading Details"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Description <span className="text-red-700">*</span>
-                  </label>
-                  <textarea
-                    name="notification_description"
-                    value={notification.notification_description}
-                    onChange={onInputChange}
-                    rows={4}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all"
-                    placeholder="Enter Description Details"
-                    required
-                  />
-                </div>
-                {/* Image Upload */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Image
-                  </label>
-                  <input
-                    type="file"
-                    name="notification_image"
-                    onChange={onFileChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all"
-                    accept=".jpg, .png"
+                  <img
+                    src={
+                      notification?.notification_image === null ||
+                      notification?.notification_image === ""
+                        ? `${No_Image_Url}`
+                        : `${Image_Url}/notification_images/${notification.notification_image}?t=${RandomValue}`
+                    }
+                    alt="Notification"
+                    className={`w-48 h-48 object-cover rounded-lg transition-opacity duration-300 ${
+                      imageloading ? "opacity-0" : "opacity-100"
+                    }`}
+                    onLoad={() => setImageLoading(false)}
                   />
                 </div>
 
-                {/* Status Dropdown */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Status <span className="text-red-700">*</span>
-                  </label>
-                  <select
-                    name="notification_status"
-                    value={notification.notification_status}
-                    onChange={onInputChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all"
-                    required
-                  >
-                    <option value="" disabled>
-                      Select Status
-                    </option>
-                    {statusOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
+                <div className="flex-1">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Heading <span className="text-red-700">*</span>
+                    </label>
+                    <textarea
+                      name="notification_heading"
+                      value={notification.notification_heading}
+                      onChange={onInputChange}
+                      rows={4}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all"
+                      placeholder="Enter Heading Details"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Description <span className="text-red-700">*</span>
+                    </label>
+                    <textarea
+                      name="notification_description"
+                      value={notification.notification_description}
+                      onChange={onInputChange}
+                      rows={4}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all"
+                      placeholder="Enter Description Details"
+                      required
+                    />
+                  </div>
+                  {/* Image Upload */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Image
+                    </label>
+                    <input
+                      type="file"
+                      name="notification_image"
+                      onChange={onFileChange}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all"
+                      accept=".jpg, .png"
+                    />
+                  </div>
+
+                  {/* Status Dropdown */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Status <span className="text-red-700">*</span>
+                    </label>
+                    <select
+                      name="notification_status"
+                      value={notification.notification_status}
+                      onChange={onInputChange}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all"
+                      required
+                    >
+                      <option value="" disabled>
+                        Select Status
                       </option>
-                    ))}
-                  </select>
+                      {statusOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Buttons */}
-            <div className="flex justify-end mt-8 space-x-4">
-              <button
-                type="button"
-                onClick={() => navigate("/notification")}
-                className="px-6 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={isButtonDisabled}
-                className="px-6 py-2 text-sm font-medium text-white bg-accent-500 rounded-lg hover:bg-accent-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
-              >
-                {loading ? "Updating..." : "Update"}
-              </button>
-            </div>
-          </form>
-        </div>
+              {/* Buttons */}
+              <div className="flex justify-end mt-8 space-x-4">
+                <button
+                  type="button"
+                  onClick={() => navigate("/notification")}
+                  className={ButtonCancel}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isButtonDisabled}
+                  className={ButtonCss}
+                >
+                  {loading ? "Updating..." : "Update"}
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
       </div>
     </Layout>
   );

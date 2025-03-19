@@ -8,6 +8,8 @@ import MUIDataTable from "mui-datatables";
 import moment from "moment";
 import { Base_Url, Image_Url, No_Image_Url } from "../../../config/BaseUrl";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import { encryptId } from "../../../components/common/EncryptionDecryption";
+import { ButtonCss } from "../../../components/common/ButtonCss";
 
 const NewsList = () => {
   const [news, setNews] = useState([]);
@@ -110,9 +112,17 @@ const NewsList = () => {
           customBodyRender: (value) => (
             <Tooltip title="Edit" placement="top">
               <IconButton>
-                <Link to={`/app-update/news/edit/${value}`}>
+                <span
+                  onClick={() => {
+                    navigate(
+                      `/app-update/news/edit/${encodeURIComponent(
+                        encryptId(value)
+                      )}`
+                    );
+                  }}
+                >
                   <EditIcon className="text-gray-600 hover:text-accent-500" />
-                </Link>
+                </span>
               </IconButton>
             </Tooltip>
           ),
@@ -145,7 +155,7 @@ const NewsList = () => {
     customToolbar: () => (
       <button
         onClick={() => navigate("/app-update/news/add")}
-        className="bg-accent-500 text-white px-4 py-2 rounded-lg hover:bg-accent-600 transition-colors text-sm font-medium"
+        className={ButtonCss}
       >
         + Add News
       </button>

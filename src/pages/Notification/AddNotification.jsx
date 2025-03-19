@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Base_Url } from "../../config/BaseUrl";
 import axios from "axios";
 import { ArrowBack } from "@mui/icons-material";
+import { ButtonCancel, ButtonCss } from "../../components/common/ButtonCss";
 
 const AddNotification = () => {
   const navigate = useNavigate();
@@ -16,7 +17,6 @@ const AddNotification = () => {
   });
   const [selectedFile, setSelectedFile] = useState(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-
 
   // Handle input change
   const onInputChange = (e) => {
@@ -37,7 +37,10 @@ const AddNotification = () => {
 
     const formData = new FormData();
     formData.append("notification_heading", notification.notification_heading);
-    formData.append("notification_description", notification.notification_description);
+    formData.append(
+      "notification_description",
+      notification.notification_description
+    );
     if (selectedFile) {
       formData.append("notification_image", selectedFile);
     }
@@ -51,10 +54,6 @@ const AddNotification = () => {
       setIsButtonDisabled(true);
       setLoading(true);
 
-
-
-      
-      
       try {
         const response = await axios({
           url: `${Base_Url}/panel-create-notification`,
@@ -148,14 +147,14 @@ const AddNotification = () => {
               <button
                 type="button"
                 onClick={() => navigate("/notification")}
-                className="px-6 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                className={ButtonCancel}
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isButtonDisabled}
-                className="px-6 py-2 text-sm font-medium text-white bg-accent-500 rounded-lg hover:bg-accent-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+                className={ButtonCss}
               >
                 {loading ? "Submitting..." : "Submit"}
               </button>

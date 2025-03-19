@@ -7,6 +7,8 @@ import { Link, useNavigate } from "react-router-dom";
 import Layout from "../../../components/Layout";
 import { Base_Url, Image_Url, No_Image_Url } from "../../../config/BaseUrl";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import { encryptId } from "../../../components/common/EncryptionDecryption";
+import { ButtonCss } from "../../../components/common/ButtonCss";
 const SubCategory = () => {
   const [loading, setLoading] = useState(true);
   const [subCategoryData, setSubCategoryData] = useState([]);
@@ -111,9 +113,17 @@ const SubCategory = () => {
           sort: false,
           customBodyRender: (value) => (
             <Tooltip title="Edit" placement="top">
-              <Link to={`/master/subcategory/edit/${value}`}>
+              <span
+                onClick={() => {
+                  navigate(
+                    `/master/subcategory/edit/${encodeURIComponent(
+                      encryptId(value)
+                    )}`
+                  );
+                }}
+              >
                 <EditIcon className="text-gray-600 hover:text-accent-500" />
-              </Link>
+              </span>
             </Tooltip>
           ),
         },
@@ -144,7 +154,7 @@ const SubCategory = () => {
     customToolbar: () => (
       <button
         onClick={() => navigate("/master/subcategory/add")}
-        className="bg-accent-500 text-white px-4 py-2 rounded-lg hover:bg-accent-600 transition-colors text-sm font-medium"
+        className={ButtonCss}
       >
         + Add Category
       </button>

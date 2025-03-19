@@ -33,9 +33,11 @@ import EditSlider from "./pages/appUpdates/slider/EditSlider";
 import WebsiteEnquiry from "./pages/websiteEnquiry/WebsiteEnquiry";
 import EditCategory from "./pages/Master/category/EditCategory";
 import CategoryList from "./pages/Master/category/CategoryList";
+import DisableRightClick from "./components/common/DisableRightClick";
 function App() {
   return (
     <>
+      {/* <DisableRightClick /> */}
       <Toaster richColors position="top-right" />
       <Routes>
         <Route path="/" element={<SignIn />} />
