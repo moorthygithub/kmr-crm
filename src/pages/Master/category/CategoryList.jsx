@@ -1,16 +1,12 @@
-import React, { useEffect, useState, useMemo } from "react";
-import Layout from "../../../components/Layout";
-import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
-import {
-  Tooltip,
-  CircularProgress,
-  IconButton,
-  Typography,
-} from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import { CircularProgress, Tooltip } from "@mui/material";
+import axios from "axios";
 import MUIDataTable from "mui-datatables";
-import { Base_Url } from "../../../config/BaseUrl";
+import React, { useEffect, useMemo, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import Layout from "../../../components/Layout";
+import { Base_Url, Image_Url, No_Image_Url } from "../../../config/BaseUrl";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const CategoryList = () => {
   const [loading, setLoading] = useState(true);
@@ -75,8 +71,8 @@ const CategoryList = () => {
             <img
               src={
                 value
-                  ? `https://kmrlive.in/storage/app/public/categories_images/${value}`
-                  : "https://kmrlive.in/storage/app/public/no_image.jpg"
+                  ? `${Image_Url}/categories_images/${value}`
+                  : `${No_Image_Url}`
               }
               alt="Category"
               className="w-10 h-10 object-cover rounded"
@@ -129,11 +125,7 @@ const CategoryList = () => {
     print: false,
     textLabels: {
       body: {
-        noMatch: loading ? (
-          <CircularProgress className="text-accent-500" />
-        ) : (
-          "Sorry, no data available"
-        ),
+        noMatch: loading ? <LoaderComponent /> : "Sorry, no data available",
       },
     },
     setRowProps: (row) => ({

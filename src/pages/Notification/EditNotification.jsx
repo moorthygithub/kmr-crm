@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import Layout from "../../components/Layout";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { Base_Url } from "../../config/BaseUrl";
+import { Base_Url, Image_Url, No_Image_Url } from "../../config/BaseUrl";
 import { toast } from "sonner";
 import { ArrowBack } from "@mui/icons-material";
+import { ImageLoaderComponent } from "../../components/common/LoaderComponent";
 
 const statusOptions = [
   { value: "Active", label: "Active" },
@@ -24,6 +25,7 @@ const EditNotification = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [imageloading, setImageLoading] = useState(true);
 
   useEffect(() => {
     const fetchNotification = async () => {
@@ -123,16 +125,33 @@ const EditNotification = () => {
         <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 w-full">
           <form autoComplete="off" onSubmit={onSubmit}>
             <div className="space-y-6 lg:space-y-0 flex flex-col lg:flex-row gap-0 lg:gap-2">
-              <div className="flex justify-start">
+              {/* <div className="flex justify-start">
                 <img
                   src={
                     notification?.notification_image === null ||
                     notification?.notification_image === ""
-                      ? "https://kmrlive.in/storage/app/public/no_image.jpg"
-                      : `https://kmrlive.in/storage/app/public/notification_images/${notification.notification_image}?t=${RandomValue}`
+                      ? `${No_Image_Url}`
+                      : `${Image_Url}/notification_images/${notification.notification_image}?t=${RandomValue}`
                   }
                   alt="Notification"
                   className="w-48 h-48 object-cover rounded-lg"
+                />
+              </div> */}
+              <div className="relative w-48 h-48 flex justify-center items-center">
+                {imageloading && <ImageLoaderComponent />}
+
+                <img
+                  src={
+                    notification?.notification_image === null ||
+                    notification?.notification_image === ""
+                      ? `${No_Image_Url}`
+                      : `${Image_Url}/notification_images/${notification.notification_image}?t=${RandomValue}`
+                  }
+                  alt="Notification"
+                  className={`w-48 h-48 object-cover rounded-lg transition-opacity duration-300 ${
+                    imageloading ? "opacity-0" : "opacity-100"
+                  }`}
+                  onLoad={() => setImageLoading(false)}
                 />
               </div>
 

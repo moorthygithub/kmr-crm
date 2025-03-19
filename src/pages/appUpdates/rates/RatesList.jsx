@@ -6,6 +6,7 @@ import { Tooltip, CircularProgress, IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import MUIDataTable from "mui-datatables";
 import { Base_Url } from "../../../config/BaseUrl";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const RatesList = () => {
   const [rates, setRates] = useState([]);
@@ -62,18 +63,14 @@ const RatesList = () => {
     fetchCategories();
   }, []);
 
-  // category_name - categorries 
+  // category_name - categorries
 
-  // vendor_category - rate list 
-    const filteredCategories = useMemo(() => {
-       return categories.filter((category) =>
-        rates.some(
-           (item) => item.vendor_category === category.category_name
-         )
-       );
-     }, [categories, rates]);
-
-  
+  // vendor_category - rate list
+  const filteredCategories = useMemo(() => {
+    return categories.filter((category) =>
+      rates.some((item) => item.vendor_category === category.category_name)
+    );
+  }, [categories, rates]);
 
   const filteredRates = useMemo(() => {
     if (selectedCategory === "all") {
@@ -175,11 +172,7 @@ const RatesList = () => {
     print: false,
     textLabels: {
       body: {
-        noMatch: loading ? (
-          <CircularProgress className="text-accent-500" />
-        ) : (
-          "Sorry, no data available"
-        ),
+        noMatch: loading ? <LoaderComponent /> : "Sorry, no data available",
       },
     },
     setRowProps: (row) => ({
@@ -241,4 +234,4 @@ const RatesList = () => {
   );
 };
 
-export default RatesList; 
+export default RatesList;

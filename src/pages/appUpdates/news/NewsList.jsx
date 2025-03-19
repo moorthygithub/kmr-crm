@@ -6,7 +6,8 @@ import { Tooltip, CircularProgress, IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import MUIDataTable from "mui-datatables";
 import moment from "moment";
-import { Base_Url } from "../../../config/BaseUrl";
+import { Base_Url, Image_Url, No_Image_Url } from "../../../config/BaseUrl";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const NewsList = () => {
   const [news, setNews] = useState([]);
@@ -58,11 +59,7 @@ const NewsList = () => {
           sort: false,
           customBodyRender: (value) => (
             <img
-              src={
-                value
-                  ? `https://kmrlive.in/storage/app/public/News/${value}`
-                  : "https://kmrlive.in/storage/app/public/no_image.jpg"
-              }
+              src={value ? `${Image_Url}/News/${value}` : `${No_Image_Url}`}
               alt="News"
               className="w-10 h-10 object-cover rounded"
             />
@@ -76,9 +73,7 @@ const NewsList = () => {
           filter: true,
           sort: false,
           customBodyRender: (value) => (
-            <div className="text-sm">
-              {moment(value).format("DD-MM-YYYY")}
-            </div>
+            <div className="text-sm">{moment(value).format("DD-MM-YYYY")}</div>
           ),
         },
       },
@@ -131,18 +126,14 @@ const NewsList = () => {
   const options = {
     selectableRows: "none",
     elevation: 0,
-  
+
     responsive: "standard",
     viewColumns: false,
     download: false,
     print: false,
     textLabels: {
       body: {
-        noMatch: loading ? (
-          <CircularProgress className="text-accent-500" />
-        ) : (
-          "Sorry, no data available"
-        ),
+        noMatch: loading ? <LoaderComponent /> : "Sorry, no data available",
       },
     },
     setRowProps: (row) => ({

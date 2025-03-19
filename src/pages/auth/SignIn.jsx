@@ -13,14 +13,12 @@ const SignIn = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
-  
   const validationSchema = Yup.object({
-    email: Yup.string().required("Email is required"),
+    email: Yup.string().required("UserName is required"),
     password: Yup.string()
       .min(2, "Password should be of minimum 2 characters length")
       .required("Password is required"),
   });
-
 
   const formik = useFormik({
     initialValues: {
@@ -73,7 +71,6 @@ const SignIn = () => {
       }
     },
   });
-
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -129,7 +126,7 @@ const SignIn = () => {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-colors placeholder-gray-400"
-                placeholder="Enter your email"
+                placeholder="Enter your Username"
               />
               {formik.touched.email && formik.errors.email && (
                 <p className="text-sm text-red-500 mt-1">
@@ -171,8 +168,13 @@ const SignIn = () => {
               )}
             </div>
             <div className="flex items-center justify-between">
-              <div   className="flex items-center">
-                <Checkbox   tabIndex={-1} id="rememberMe" name="rememberMe" color="primary" />
+              <div className="flex items-center">
+                <Checkbox
+                  tabIndex={-1}
+                  id="rememberMe"
+                  name="rememberMe"
+                  color="primary"
+                />
                 <label
                   htmlFor="rememberMe"
                   className="ml-2 text-sm text-gray-700"

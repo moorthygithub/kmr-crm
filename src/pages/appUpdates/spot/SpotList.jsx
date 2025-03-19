@@ -7,6 +7,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import MUIDataTable from "mui-datatables";
 import moment from "moment";
 import { Base_Url } from "../../../config/BaseUrl";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const SpotList = () => {
   const [spotRates, setSpotRates] = useState([]);
@@ -92,16 +93,12 @@ const SpotList = () => {
           sort: false,
           customBodyRender: (value, tableMeta) => {
             const data = spotRates[tableMeta.rowIndex];
-            
+
             const formattedDateTime = formatDateTime(
-              data.vendor_spot_created_date,  
+              data.vendor_spot_created_date,
               data.vendor_spot_created_time
             );
-            return (
-              <div className="text-sm">
-                {formattedDateTime}
-              </div>
-            );
+            return <div className="text-sm">{formattedDateTime}</div>;
           },
         },
       },
@@ -114,25 +111,20 @@ const SpotList = () => {
         },
       },
     ],
-    [spotRates] 
+    [spotRates]
   );
-
 
   const options = {
     selectableRows: "none",
     elevation: 0,
- 
+
     responsive: "standard",
     viewColumns: false,
     download: false,
     print: false,
     textLabels: {
       body: {
-        noMatch: loading ? (
-          <CircularProgress className="text-accent-500" />
-        ) : (
-          "Sorry, no data available"
-        ),
+        noMatch: loading ? <LoaderComponent /> : "Sorry, no data available",
       },
     },
     setRowProps: (row) => ({

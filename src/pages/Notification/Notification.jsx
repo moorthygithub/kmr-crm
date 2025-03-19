@@ -1,12 +1,13 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Layout from "../../components/Layout";
-import { Base_Url } from "../../config/BaseUrl";
+import { Base_Url, Image_Url, No_Image_Url } from "../../config/BaseUrl";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { Tooltip, CircularProgress } from "@mui/material";
 import MUIDataTable from "mui-datatables";
 import EditIcon from "@mui/icons-material/Edit";
 import moment from "moment/moment";
+import LoaderComponent from "../../components/common/LoaderComponent";
 const Notification = () => {
   const [loading, setLoading] = useState(true);
   const [NotificationData, setNotificationData] = useState([]);
@@ -71,8 +72,8 @@ const Notification = () => {
             <img
               src={
                 value
-                  ? `https://kmrlive.in/storage/app/public/notification_images/${value}?t=${RandomValue}`
-                  : "https://kmrlive.in/storage/app/public/no_image.jpg"
+                  ? `${Image_Url}/notification_images/${value}?t=${RandomValue}`
+                  : `${No_Image_Url}`
               }
               alt="Image"
               className="w-10 h-10 object-cover rounded"
@@ -136,11 +137,7 @@ const Notification = () => {
     print: false,
     textLabels: {
       body: {
-        noMatch: loading ? (
-          <CircularProgress className="text-accent-500" />
-        ) : (
-          "Sorry, no data available"
-        ),
+        noMatch: loading ? <LoaderComponent /> : "Sorry, no data available",
       },
     },
     setRowProps: (row) => ({

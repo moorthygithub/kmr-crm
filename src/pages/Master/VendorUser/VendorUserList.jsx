@@ -7,6 +7,7 @@ import MUIDataTable from "mui-datatables";
 import { CircularProgress, Tooltip } from "@mui/material";
 
 import EditIcon from "@mui/icons-material/Edit";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const VendorUserList = () => {
   const [vendorUserData, setVendorUserData] = useState([]);
@@ -116,11 +117,7 @@ const VendorUserList = () => {
     print: false,
     textLabels: {
       body: {
-        noMatch: loading ? (
-          <CircularProgress className="text-accent-500" />
-        ) : (
-          "Sorry, no data available"
-        ),
+        noMatch: loading ? <LoaderComponent /> : "Sorry, no data available",
       },
     },
     setRowProps: (row) => ({

@@ -23,6 +23,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Moment from "moment";
 import { Base_Url } from "../../config/BaseUrl";
+import LoaderComponent from "../../components/common/LoaderComponent";
 
 const Dashboard = () => {
   const [results, setResults] = useState({});
@@ -208,8 +209,8 @@ const Dashboard = () => {
 
             <Collapse in={!isMinimized}>
               {loading ? (
-                <div className="flex justify-center p-6">
-                  <CircularProgress />
+                <div className="flex justify-center">
+                  <LoaderComponent />{" "}
                 </div>
               ) : (
                 <>
