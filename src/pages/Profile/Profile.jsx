@@ -6,16 +6,18 @@ import {
   DialogTitle,
   Slide,
 } from "@mui/material";
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { ButtonCancel, ButtonCss } from "../../components/common/ButtonCss";
+import { decryptData } from "../../components/common/EncryptionDecryption";
 import { EditLoaderComponent } from "../../components/common/LoaderComponent";
 import Layout from "../../components/Layout";
-import { Base_Url } from "../../config/BaseUrl";
-import { decryptData } from "../../components/common/EncryptionDecryption";
-import { FETCH_PROFILE_DATA } from "../api/UseApi";
+import {
+  CHNAGE_PASSWORD,
+  FETCH_PROFILE_DATA,
+  UPDATE_PROFILE,
+} from "../api/UseApi";
 
 // Reusable Input Component
 const InputField = ({
@@ -173,15 +175,7 @@ const Profile = () => {
     };
 
     try {
-      const response = await axios.post(
-        `${Base_Url}/panel-update-profile`,
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await UPDATE_PROFILE(data);
 
       if (response.data.code === 401) {
         toast.error("Duplicate Entry of Name");
@@ -218,15 +212,7 @@ const Profile = () => {
     };
 
     try {
-      const response = await axios.post(
-        `${Base_Url}/panel-change-password`,
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await CHNAGE_PASSWORD(data);
 
       if (response.data.code === 200) {
         toast.success("Password Updated Successfully!");

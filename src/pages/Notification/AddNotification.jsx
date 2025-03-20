@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../../components/Layout";
-import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
-import { Base_Url } from "../../config/BaseUrl";
-import axios from "axios";
 import { ArrowBack } from "@mui/icons-material";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { ButtonCancel, ButtonCss } from "../../components/common/ButtonCss";
+import Layout from "../../components/Layout";
+import { CREATE_NOTIFICATION_LIST } from "../api/UseApi";
 
 const AddNotification = () => {
   const navigate = useNavigate();
@@ -55,14 +54,7 @@ const AddNotification = () => {
       setLoading(true);
 
       try {
-        const response = await axios({
-          url: `${Base_Url}/panel-create-notification`,
-          method: "POST",
-          data: formData,
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const response = await CREATE_NOTIFICATION_LIST(formData);
 
         if (response.data.code == 200) {
           navigate("/notification");

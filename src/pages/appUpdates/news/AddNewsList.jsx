@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import Layout from "../../../components/Layout";
 import { useNavigate } from "react-router-dom";
+import Layout from "../../../components/Layout";
 
-import axios from "axios";
 import { ArrowBack } from "@mui/icons-material";
-import { Base_Url } from "../../../config/BaseUrl";
 import { toast } from "sonner";
 import { ButtonCancel, ButtonCss } from "../../../components/common/ButtonCss";
+import { CREATE_VENDOR_NEWS } from "../../api/UseApi";
 
 const AddNewsList = () => {
   const navigate = useNavigate();
@@ -34,7 +33,7 @@ const AddNewsList = () => {
   };
 
   // Handle form submission
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
     const formData = new FormData();
@@ -44,37 +43,31 @@ const AddNewsList = () => {
       formData.append("news_image", selectedFile);
     }
 
-    const isFormValid = document.getElementById("addNewsForm").checkValidity();
-    document.getElementById("addNewsForm").reportValidity();
+    const formElement = document.getElementById("addNewsForm");
 
-    if (isFormValid) {
+    if (!formElement.checkValidity()) {
+      formElement.reportValidity();
+      return;
+    }
+
+    try {
       setIsButtonDisabled(true);
       setLoading(true);
 
-      axios({
-        url: `${Base_Url}/panel-create-news`,
-        method: "POST",
-        data: formData,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-        .then((res) => {
-          if (res.data.code == 200) {
-            navigate("/app-update/news");
-            toast.success(res.data.msg || "Data inserted successfully");
-          } else {
-            toast.error(res.data.msg || "Duplicate Entry");
-            setIsButtonDisabled(false);
-          }
-        })
-        .catch((err) => {
-          toast.error(err.response?.data?.msg || "An error occurred");
-          setIsButtonDisabled(false);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+      const res = await CREATE_VENDOR_NEWS(formData); // Corrected `formData` reference
+
+      if (res.data.code === 200) {
+        toast.success(res.data.msg || "Data inserted successfully");
+        navigate("/app-update/news");
+      } else {
+        toast.error(res.data.msg || "Duplicate Entry");
+        setIsButtonDisabled(false);
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.msg || "An error occurred");
+      setIsButtonDisabled(false);
+    } finally {
+      setLoading(false);
     }
   };
 

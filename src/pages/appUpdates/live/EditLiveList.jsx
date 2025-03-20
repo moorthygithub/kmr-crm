@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from "react";
-import Layout from "../../../components/Layout";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import Layout from "../../../components/Layout";
 
-import axios from "axios";
 import { ArrowBack } from "@mui/icons-material";
-import { Base_Url } from "../../../config/BaseUrl";
 import { toast } from "sonner";
+import { ButtonCancel, ButtonCss } from "../../../components/common/ButtonCss";
 import { decryptId } from "../../../components/common/EncryptionDecryption";
 import { EditLoaderComponent } from "../../../components/common/LoaderComponent";
-import { ButtonCancel, ButtonCss } from "../../../components/common/ButtonCss";
+import { UPDATE_VENDOR_LIVE, VENDOR_LIVE_LIST_BY_ID } from "../../api/UseApi";
 
 const statusOptions = [
   { value: "Active", label: "Active" },
@@ -37,14 +36,7 @@ const EditLiveList = () => {
       setLoadingData(true);
 
       try {
-        const response = await axios.get(
-          `${Base_Url}/panel-fetch-vendor-live-by-id/${decryptedId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const response = await VENDOR_LIVE_LIST_BY_ID(decryptedId);
         setVendor(response.data.vendor);
       } catch (error) {
         console.error("Error fetching vendor data:", error);
@@ -78,15 +70,7 @@ const EditLiveList = () => {
 
     try {
       setLoading(true);
-      const response = await axios.put(
-        `${Base_Url}/panel-update-vendor-live/${decryptedId}`,
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await UPDATE_VENDOR_LIVE(decryptedId);
       if (response.data.code == 200) {
         navigate("/app-update/live");
         toast.success(response.data.msg || "Data updated successfully");

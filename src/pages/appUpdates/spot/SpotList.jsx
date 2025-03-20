@@ -1,14 +1,11 @@
-import React, { useEffect, useState, useMemo } from "react";
-import Layout from "../../../components/Layout";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { Tooltip, CircularProgress } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import MUIDataTable from "mui-datatables";
 import moment from "moment";
-import { Base_Url } from "../../../config/BaseUrl";
-import LoaderComponent from "../../../components/common/LoaderComponent";
+import MUIDataTable from "mui-datatables";
+import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ButtonCss } from "../../../components/common/ButtonCss";
+import LoaderComponent from "../../../components/common/LoaderComponent";
+import Layout from "../../../components/Layout";
+import { VENDOR_SPOT_RATES_LIST } from "../../api/UseApi";
 
 const SpotList = () => {
   const [spotRates, setSpotRates] = useState([]);
@@ -20,15 +17,7 @@ const SpotList = () => {
     const fetchSpotRates = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${Base_Url}/panel-fetch-vendor-spot-rates-list`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await VENDOR_SPOT_RATES_LIST();
 
         setSpotRates(response?.data?.vendor || []);
       } catch (error) {

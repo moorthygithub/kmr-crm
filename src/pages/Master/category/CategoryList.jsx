@@ -1,14 +1,14 @@
 import EditIcon from "@mui/icons-material/Edit";
-import { CircularProgress, Tooltip } from "@mui/material";
-import axios from "axios";
+import { Tooltip } from "@mui/material";
 import MUIDataTable from "mui-datatables";
 import React, { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import Layout from "../../../components/Layout";
-import { Base_Url, Image_Url, No_Image_Url } from "../../../config/BaseUrl";
-import LoaderComponent from "../../../components/common/LoaderComponent";
-import { encryptId } from "../../../components/common/EncryptionDecryption";
+import { useNavigate } from "react-router-dom";
 import { ButtonCss } from "../../../components/common/ButtonCss";
+import { encryptId } from "../../../components/common/EncryptionDecryption";
+import LoaderComponent from "../../../components/common/LoaderComponent";
+import Layout from "../../../components/Layout";
+import { Image_Url, No_Image_Url } from "../../../config/BaseUrl";
+import { CATEGORY_LIST } from "../../api/UseApi";
 
 const CategoryList = () => {
   const [loading, setLoading] = useState(true);
@@ -20,20 +20,7 @@ const CategoryList = () => {
     const fetchCategory = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem("token");
-        if (!token) {
-          console.error("No token found, redirecting to login.");
-          return;
-        }
-
-        const response = await axios.get(
-          `${Base_Url}/panel-fetch-category-list`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await CATEGORY_LIST();
 
         setCategoryData(response?.data?.category || []);
       } catch (error) {
@@ -107,7 +94,6 @@ const CategoryList = () => {
           customBodyRender: (value) => (
             <Tooltip title="Edit" placement="top">
               <span
-                // to={`/master/category/edit/${value}`}
                 onClick={() => {
                   navigate(
                     `/master/category/edit/${encodeURIComponent(

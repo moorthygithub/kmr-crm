@@ -1,16 +1,20 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../../../components/Layout";
-import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
-import { Base_Url, Image_Url, No_Image_Url } from "../../../config/BaseUrl";
-import { toast } from "sonner";
 import { ArrowBack } from "@mui/icons-material";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
+import { ButtonCancel, ButtonCss } from "../../../components/common/ButtonCss";
+import { decryptId } from "../../../components/common/EncryptionDecryption";
 import {
   EditLoaderComponent,
   ImageLoaderComponent,
 } from "../../../components/common/LoaderComponent";
-import { decryptId } from "../../../components/common/EncryptionDecryption";
-import { ButtonCancel, ButtonCss } from "../../../components/common/ButtonCss";
+import Layout from "../../../components/Layout";
+import { Image_Url, No_Image_Url } from "../../../config/BaseUrl";
+import {
+  FETCH_SUB_CATEGORY_BY_ID,
+  SUB_FETCH_CATEGORY,
+  UPDATE_SUB_CATEGORY,
+} from "../../api/UseApi";
 
 const statusOptions = [
   { value: "Active", label: "Active" },
@@ -41,14 +45,7 @@ const EditSubCategory = () => {
       setLoadingData(true);
 
       try {
-        const response = await axios.get(
-          `${Base_Url}/panel-fetch-sub-category-by-id/${decryptedId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const response = await FETCH_SUB_CATEGORY_BY_ID(decryptedId);
         setSubCategory(response.data.categorySub);
       } catch (error) {
         console.error("Error fetching subcategory data:", error);
@@ -65,11 +62,7 @@ const EditSubCategory = () => {
   useEffect(() => {
     const fetchCategoryData = async () => {
       try {
-        const response = await axios.get(`${Base_Url}/panel-fetch-category`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const response = await SUB_FETCH_CATEGORY();
         setCategorydata(response.data.category || []);
       } catch (error) {
         console.error("Error fetching category data:", error);
@@ -107,15 +100,7 @@ const EditSubCategory = () => {
     try {
       setIsButtonDisabled(true);
       setLoading(true);
-      const response = await axios.post(
-        `${Base_Url}/panel-update-sub-category/${decryptedId}?_method=PUT`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await UPDATE_SUB_CATEGORY(decryptedId, formData);
       if (response.data.code == 200) {
         navigate("/master/subcategory");
         toast.success(response.data.msg || "Data updated successfully");

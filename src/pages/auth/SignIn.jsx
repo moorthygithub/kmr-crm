@@ -1,6 +1,5 @@
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import Checkbox from "@mui/material/Checkbox";
-import axios from "axios";
 import { useFormik } from "formik";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -10,9 +9,9 @@ import siginLogo from "../../assets/kmrlive.png";
 import { ButtonCss } from "../../components/common/ButtonCss";
 import {
   decryptData,
-  encryptData
+  encryptData,
 } from "../../components/common/EncryptionDecryption";
-import { Base_Url } from "../../config/BaseUrl";
+import { PANEL_LOGIN } from "../api/UseApi";
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -35,19 +34,12 @@ const SignIn = () => {
     onSubmit: async (values) => {
       setIsLoading(true);
       try {
-        const response = await axios.post(
-          `${Base_Url}/panel-login`,
-          {
-            username: values.email,
-            password: values.password,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const formData = {
+          username: values.email,
+          password: values.password,
+        };
 
+        const response = await PANEL_LOGIN(formData);
         const data = response.data;
         console.log("API Response:", data);
 

@@ -1,13 +1,17 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../../../components/Layout";
-import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
-import { Base_Url } from "../../../config/BaseUrl";
-import { toast } from "sonner";
 import { ArrowBack } from "@mui/icons-material";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
+import { ButtonCancel, ButtonCss } from "../../../components/common/ButtonCss";
 import { decryptId } from "../../../components/common/EncryptionDecryption";
 import { EditLoaderComponent } from "../../../components/common/LoaderComponent";
-import { ButtonCancel, ButtonCss } from "../../../components/common/ButtonCss";
+import Layout from "../../../components/Layout";
+import {
+  FETCH_SUB_CATEGORY,
+  FETCH_SUB_VENDOR_BY_ID,
+  SUB_FETCH_CATEGORY,
+  UPDATE_VENDOR,
+} from "../../api/UseApi";
 
 const statusOptions = [
   { value: "Active", label: "Active" },
@@ -59,14 +63,7 @@ const EditVendor = () => {
       setLoadingData(true);
 
       try {
-        const response = await axios.get(
-          `${Base_Url}/panel-fetch-vendor-by-id/${decryptedId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const response = await FETCH_SUB_VENDOR_BY_ID(decryptedId);
         setVendor(response.data.vendor);
         setVendorProducts(response.data.vendorSub);
       } catch (error) {
@@ -84,11 +81,7 @@ const EditVendor = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(`${Base_Url}/panel-fetch-category`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const response = await SUB_FETCH_CATEGORY();
         setCategories(response.data.category);
       } catch (error) {
         toast.error("Failed to fetch categories.");
@@ -103,14 +96,7 @@ const EditVendor = () => {
     const fetchSubCategories = async () => {
       if (vendor.vendor_category) {
         try {
-          const response = await axios.get(
-            `${Base_Url}/panel-fetch-sub-category/${vendor.vendor_category}`,
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-            }
-          );
+          const response = await FETCH_SUB_CATEGORY(vendor.vendor_category);
           setSubCategories(response.data.categorySub);
         } catch (error) {
           toast.error("Failed to fetch subcategories.");
@@ -147,15 +133,7 @@ const EditVendor = () => {
     try {
       setIsButtonDisabled(true);
       setLoading(true);
-      const response = await axios.put(
-        `${Base_Url}/panel-update-vendor/${decryptedId}`,
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await UPDATE_VENDOR(decryptedId, data);
 
       if (response.data.code == 200) {
         navigate("/master/vendor");

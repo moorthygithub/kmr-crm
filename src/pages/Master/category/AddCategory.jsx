@@ -1,11 +1,10 @@
-import React, { useState } from "react";
-import Layout from "../../../components/Layout";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { Base_Url } from "../../../config/BaseUrl";
-import { toast } from "sonner";
 import { ArrowBack } from "@mui/icons-material";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { ButtonCancel, ButtonCss } from "../../../components/common/ButtonCss";
+import Layout from "../../../components/Layout";
+import { CREATE_CATEGORY } from "../../api/UseApi";
 
 const AddCategory = () => {
   const navigate = useNavigate();
@@ -31,46 +30,38 @@ const AddCategory = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
 
+    const formElement = document.getElementById("addCategoryForm");
+    if (!formElement.checkValidity()) {
+      formElement.reportValidity();
+      return;
+    }
+
     const formData = new FormData();
     formData.append("category_name", category.category_name);
     if (selectedFile) {
       formData.append("categories_images", selectedFile);
     }
-    const isFormValid = document
-      .getElementById("addCategoryForm")
-      .checkValidity();
-    document.getElementById("addCategoryForm").reportValidity();
 
-    if (isFormValid) {
-      setIsButtonDisabled(true);
-      setLoading(true);
+    setIsButtonDisabled(true);
+    setLoading(true);
 
-      await axios({
-        url: `${Base_Url}/panel-create-category`,
-        method: "POST",
-        data: formData,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-        .then((res) => {
-          if (res.data.code == 200) {
-            navigate("/master/category");
-            toast.success(res.data.msg || "Data inserted successfully");
-          } else {
-            toast.error(res.data.msg || "Duplicate Entry");
-            setIsButtonDisabled(false);
-          }
-        })
-        .catch((err) => {
-          toast.error(err.response?.data?.msg || "An error occurred");
-          setIsButtonDisabled(false);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+    try {
+      const res = await CREATE_CATEGORY(formData);
+      if (res.data.code === 200) {
+        toast.success(res.data.msg || "Data inserted successfully");
+        navigate("/master/category");
+      } else {
+        toast.error(res.data.msg || "Duplicate Entry");
+        setIsButtonDisabled(false);
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.msg || "An error occurred");
+      setIsButtonDisabled(false);
+    } finally {
+      setLoading(false);
     }
   };
+
   return (
     <Layout>
       <div className="p-2 bg-gray-50 min-h-screen">

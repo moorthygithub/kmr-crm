@@ -1,11 +1,10 @@
-import React, { useState } from "react";
-import Layout from "../../../components/Layout";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { Base_Url } from "../../../config/BaseUrl";
-import { toast } from "sonner";
 import { ArrowBack } from "@mui/icons-material";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { ButtonCancel, ButtonCss } from "../../../components/common/ButtonCss";
+import Layout from "../../../components/Layout";
+import { CREATE_VENDOR_USER_LIST } from "../../api/UseApi";
 
 const AddVendorUser = () => {
   const navigate = useNavigate();
@@ -30,7 +29,7 @@ const AddVendorUser = () => {
   };
 
   // Handle form submission
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
     const formData = new FormData();
@@ -39,37 +38,31 @@ const AddVendorUser = () => {
     formData.append("email", vendorUser.email);
     formData.append("remarks", vendorUser.remarks);
 
-    const isFormValid = document
-      .getElementById("addVendorUserForm")
-      .checkValidity();
-    document.getElementById("addVendorUserForm").reportValidity();
+    const formElement = document.getElementById("addVendorUserForm");
 
-    if (isFormValid) {
+    if (!formElement.checkValidity()) {
+      formElement.reportValidity();
+      return;
+    }
+
+    try {
       setIsButtonDisabled(true);
       setLoading(true);
 
-      axios({
-        url: `${Base_Url}/panel-create-vendor-user`,
-        method: "POST",
-        data: formData,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-        .then((res) => {
-          if (res.data.code == 200) {
-            navigate("/master/vendor-user");
-            toast.success(res.data.msg || "Data inserted successfully");
-          } else {
-            toast.error(res.data.msg || "Duplicate Entry");
-            setIsButtonDisabled(false);
-          }
-        })
-        .catch((err) => {
-          toast.error(err.response?.data?.msg || "An error occurred");
-          setIsButtonDisabled(false);
-          setLoading(false);
-        });
+      const res = await CREATE_VENDOR_USER_LIST(formData);
+
+      if (res.data.code === 200) {
+        toast.success(res.data.msg || "Data inserted successfully");
+        navigate("/master/vendor-user");
+      } else {
+        toast.error(res.data.msg || "Duplicate Entry");
+        setIsButtonDisabled(false);
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.msg || "An error occurred");
+      setIsButtonDisabled(false);
+    } finally {
+      setLoading(false);
     }
   };
 

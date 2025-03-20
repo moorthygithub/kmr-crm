@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";
-import Layout from "../../../components/Layout";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Layout from "../../../components/Layout";
 
-import axios from "axios";
 import { ArrowBack } from "@mui/icons-material";
-import { Base_Url } from "../../../config/BaseUrl";
 import { toast } from "sonner";
 import { ButtonCancel, ButtonCss } from "../../../components/common/ButtonCss";
+import {
+  CREATE_VENDOR_SPOT_RATES,
+  VENDOR_SPOT_RATES_LIST_BY_ID,
+} from "../../api/UseApi";
 
 const AddSpotList = () => {
   const navigate = useNavigate();
@@ -28,13 +30,8 @@ const AddSpotList = () => {
   const [vendorsData, setVendorsData] = useState([]);
   useEffect(() => {
     const fetchVendors = async () => {
-      const token = localStorage.getItem("token");
       try {
-        const response = await axios.get(`${Base_Url}/panel-fetch-vendor/3`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await VENDOR_SPOT_RATES_LIST_BY_ID();
         setVendorsData(response.data.vendor || []);
       } catch (error) {
         console.error("Error fetching vendors data:", error);
@@ -43,7 +40,7 @@ const AddSpotList = () => {
 
     fetchVendors();
   }, []);
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
     const formData = new FormData();
@@ -51,39 +48,31 @@ const AddSpotList = () => {
     formData.append("vendor_spot_heading", addSpotRate.vendor_spot_heading);
     formData.append("vendor_spot_details", addSpotRate.vendor_spot_details);
 
-    const isFormValid = document
-      .getElementById("addSpotRateForm")
-      .checkValidity();
-    document.getElementById("addSpotRateForm").reportValidity();
+    const formElement = document.getElementById("addSpotRateForm");
 
-    if (isFormValid) {
+    if (!formElement.checkValidity()) {
+      formElement.reportValidity();
+      return;
+    }
+
+    try {
       setIsButtonDisabled(true);
       setLoading(true);
 
-      axios({
-        url: `${Base_Url}/panel-create-vendor-spot-rates`,
-        method: "POST",
-        data: formData,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-        .then((res) => {
-          if (res.data.code == 200) {
-            navigate("/app-update/spot");
-            toast.success(res.data.msg || "Data inserted successfully");
-          } else {
-            toast.error(res.data.msg || "Duplicate Entry");
-            setIsButtonDisabled(false);
-          }
-        })
-        .catch((err) => {
-          toast.error(err.response?.data?.msg || "An error occurred");
-          setIsButtonDisabled(false);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+      const res = await CREATE_VENDOR_SPOT_RATES(formData);
+
+      if (res.data.code === 200) {
+        toast.success(res.data.msg || "Data inserted successfully");
+        navigate("/app-update/spot");
+      } else {
+        toast.error(res.data.msg || "Duplicate Entry");
+        setIsButtonDisabled(false);
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.msg || "An error occurred");
+      setIsButtonDisabled(false);
+    } finally {
+      setLoading(false);
     }
   };
 

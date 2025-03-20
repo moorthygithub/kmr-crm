@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../../../components/Layout";
-import { useNavigate, useParams } from "react-router-dom";
-import { Base_Url } from "../../../config/BaseUrl";
-import axios from "axios";
-import { toast } from "sonner";
 import { ArrowBack } from "@mui/icons-material";
-import { EditLoaderComponent } from "../../../components/common/LoaderComponent";
-import { decryptId } from "../../../components/common/EncryptionDecryption";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
 import { ButtonCancel, ButtonCss } from "../../../components/common/ButtonCss";
+import { decryptId } from "../../../components/common/EncryptionDecryption";
+import { EditLoaderComponent } from "../../../components/common/LoaderComponent";
+import Layout from "../../../components/Layout";
+import { FETCH_VENDOR_USER_BY_ID, UPDATE_VENDOR_USER } from "../../api/UseApi";
 
 const statusOptions = [
   { value: "Active", label: "Active" },
@@ -36,14 +35,7 @@ const EditVednorUser = () => {
       setLoadingData(true);
 
       try {
-        const response = await axios.get(
-          `${Base_Url}/panel-fetch-vendor-user-by-id/${decryptedId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const response = await FETCH_VENDOR_USER_BY_ID(decryptedId);
         setVendorUser(response.data.adminUser);
       } catch (error) {
         console.error("Error fetching vendor user data:", error);
@@ -86,15 +78,7 @@ const EditVednorUser = () => {
       setLoading(true);
 
       try {
-        const response = await axios.post(
-          `${Base_Url}/panel-update-vendor-user/${decryptedId}?_method=PUT`,
-          formData,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const response = await UPDATE_VENDOR_USER(decryptedId, formData);
         if (response.data.code == 200) {
           navigate("/master/vendor-user");
           toast.success(response.data.msg || "Data updated successfully");

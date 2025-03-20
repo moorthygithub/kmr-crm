@@ -1,14 +1,13 @@
-import React, { useEffect, useState, useMemo } from "react";
-import Layout from "../../../components/Layout";
-import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
-import { Tooltip, CircularProgress, IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import { Tooltip } from "@mui/material";
 import MUIDataTable from "mui-datatables";
-import { Base_Url } from "../../../config/BaseUrl";
-import LoaderComponent from "../../../components/common/LoaderComponent";
-import { encryptId } from "../../../components/common/EncryptionDecryption";
+import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ButtonCss } from "../../../components/common/ButtonCss";
+import { encryptId } from "../../../components/common/EncryptionDecryption";
+import LoaderComponent from "../../../components/common/LoaderComponent";
+import Layout from "../../../components/Layout";
+import { CATEGORY_LIST, VENDOR_LIST } from "../../api/UseApi";
 
 const RatesList = () => {
   const [rates, setRates] = useState([]);
@@ -21,15 +20,7 @@ const RatesList = () => {
     const fetchRates = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${Base_Url}/panel-fetch-vendor-list`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await VENDOR_LIST();
 
         setRates(response?.data?.vendor || []);
       } catch (error) {
@@ -46,15 +37,7 @@ const RatesList = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${Base_Url}/panel-fetch-category-list`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await CATEGORY_LIST();
 
         setCategories(response?.data?.category || []);
       } catch (error) {

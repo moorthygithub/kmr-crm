@@ -1,16 +1,16 @@
 import { ArrowBack } from "@mui/icons-material";
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
+import { ButtonCancel, ButtonCss } from "../../../components/common/ButtonCss";
+import { decryptId } from "../../../components/common/EncryptionDecryption";
 import {
   EditLoaderComponent,
   ImageLoaderComponent,
 } from "../../../components/common/LoaderComponent";
 import Layout from "../../../components/Layout";
-import { Base_Url, Image_Url, No_Image_Url } from "../../../config/BaseUrl";
-import { decryptId } from "../../../components/common/EncryptionDecryption";
-import { ButtonCancel, ButtonCss } from "../../../components/common/ButtonCss";
+import { Image_Url, No_Image_Url } from "../../../config/BaseUrl";
+import { FETCH_CATEGORY_BY_ID, UPDATE_CATEGORY } from "../../api/UseApi";
 
 const statusOptions = [
   { value: "Active", label: "Active" },
@@ -38,14 +38,7 @@ const EditCategory = () => {
     const fetchCategory = async () => {
       setLoadingData(true);
       try {
-        const response = await axios.get(
-          `${Base_Url}/panel-fetch-category-by-id/${decryptedId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const response = await FETCH_CATEGORY_BY_ID(decryptedId);
         setCategory(response.data.category);
       } catch (error) {
         console.error("Error fetching category data:", error);
@@ -85,15 +78,7 @@ const EditCategory = () => {
     try {
       setIsButtonDisabled(true);
       setLoading(true);
-      const response = await axios.post(
-        `${Base_Url}/panel-update-category/${decryptedId}?_method=PUT`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await UPDATE_CATEGORY(decryptedId, formData);
       if (response.data.code == 200) {
         navigate("/master/category");
         toast.success(response.data.msg || "Data updated successfully");

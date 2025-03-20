@@ -1,15 +1,15 @@
-import React, { useEffect, useMemo, useState } from "react";
-import Layout from "../../components/Layout";
-import { Base_Url, Image_Url, No_Image_Url } from "../../config/BaseUrl";
-import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
-import { Tooltip, CircularProgress } from "@mui/material";
-import MUIDataTable from "mui-datatables";
 import EditIcon from "@mui/icons-material/Edit";
+import { Tooltip } from "@mui/material";
 import moment from "moment/moment";
-import LoaderComponent from "../../components/common/LoaderComponent";
-import { encryptId } from "../../components/common/EncryptionDecryption";
+import MUIDataTable from "mui-datatables";
+import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ButtonCss } from "../../components/common/ButtonCss";
+import { encryptId } from "../../components/common/EncryptionDecryption";
+import LoaderComponent from "../../components/common/LoaderComponent";
+import Layout from "../../components/Layout";
+import { Image_Url, No_Image_Url } from "../../config/BaseUrl";
+import { NOTIFICATION_LIST } from "../api/UseApi";
 const Notification = () => {
   const [loading, setLoading] = useState(true);
   const [NotificationData, setNotificationData] = useState([]);
@@ -20,20 +20,8 @@ const Notification = () => {
     const fetchNotification = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem("token");
-        if (!token) {
-          console.error("No token found, redirecting to login.");
-          return;
-        }
 
-        const response = await axios.get(
-          `${Base_Url}/panel-fetch-notification-list`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await NOTIFICATION_LIST();
 
         setNotificationData(response?.data?.data || []);
       } catch (error) {

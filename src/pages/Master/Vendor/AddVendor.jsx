@@ -1,15 +1,18 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../../../components/Layout";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { Base_Url } from "../../../config/BaseUrl";
-import { toast } from "sonner";
 import { ArrowBack } from "@mui/icons-material";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import {
   ButtonCancel,
   ButtonCss,
   ButtonRemove,
 } from "../../../components/common/ButtonCss";
+import Layout from "../../../components/Layout";
+import {
+  CREATE_VENDOR,
+  FETCH_SUB_CATEGORY,
+  SUB_FETCH_CATEGORY,
+} from "../../api/UseApi";
 
 const AddVendor = () => {
   const navigate = useNavigate();
@@ -45,9 +48,7 @@ const AddVendor = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(`${Base_Url}/panel-fetch-category`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        });
+        const response = await SUB_FETCH_CATEGORY();
         setCategory(response.data.category);
       } catch (error) {
         toast.error("Failed to fetch categories");
@@ -62,14 +63,7 @@ const AddVendor = () => {
     const fetchSubCategories = async () => {
       if (vendor.vendor_category) {
         try {
-          const response = await axios.get(
-            `${Base_Url}/panel-fetch-sub-category/${vendor.vendor_category}`,
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-            }
-          );
+          const response = await FETCH_SUB_CATEGORY(vendor.vendor_category);
           setSubCategory(response.data.categorySub);
         } catch (error) {
           toast.error("Failed to fetch subcategories");
@@ -130,13 +124,7 @@ const AddVendor = () => {
     try {
       setIsButtonDisabled(true);
       setLoading(true);
-      const response = await axios.post(
-        `${Base_Url}/panel-create-vendor`,
-        data,
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      );
+      const response = await CREATE_VENDOR(data);
 
       if (response.data.code == 200) {
         navigate("/master/vendor");
