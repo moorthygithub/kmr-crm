@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from "react";
-import Layout from "../../../components/Layout";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import Layout from "../../../components/Layout";
 
-import axios from "axios";
-import { Base_Url } from "../../../config/BaseUrl";
 import { ArrowBack } from "@mui/icons-material";
 import { toast } from "sonner";
-import { EditLoaderComponent } from "../../../components/common/LoaderComponent";
 import { decryptId } from "../../../components/common/EncryptionDecryption";
+import { EditLoaderComponent } from "../../../components/common/LoaderComponent";
+import { FETCH_SUB_VENDOR_BY_ID, UPDATE_VENDOR } from "../../api/UseApi";
 
 const statusOptions = [
   { value: "Active", label: "Active" },
@@ -40,14 +39,7 @@ const EditRatesList = () => {
     setLoadingData(true);
     const fetchVendor = async () => {
       try {
-        const response = await axios.get(
-          `${Base_Url}/panel-fetch-vendor-by-id/${decryptedId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const response = await FETCH_SUB_VENDOR_BY_ID(decryptedId);
         setVendor(response.data.vendor);
         setVendorProducts(response.data.vendorSub);
       } catch (error) {
@@ -80,15 +72,7 @@ const EditRatesList = () => {
     try {
       setIsButtonDisabled(true);
       setLoading(true);
-      const response = await axios.put(
-        `${Base_Url}/panel-update-vendor/${decryptedId}`,
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await UPDATE_VENDOR(decryptedId, data);
 
       if (response.data.code == 200) {
         navigate("/app-update/rates");

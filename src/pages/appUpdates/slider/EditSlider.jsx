@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../../../components/Layout";
-import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
-import { Base_Url } from "../../../config/BaseUrl";
-import { toast } from "sonner";
 import { ArrowBack } from "@mui/icons-material";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
+import { decryptId } from "../../../components/common/EncryptionDecryption";
+import Layout from "../../../components/Layout";
+import {
+  UPDATE_VENDOR_SLIDER,
+  VENDOR_SLIDER_LIST_BY_ID,
+} from "../../api/UseApi";
 
 const statusOptions = [
   { value: "Active", label: "Active" },
@@ -13,6 +16,7 @@ const statusOptions = [
 const EditSlider = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const decryptedId = decryptId(id);
 
   const [Slider, setSlider] = useState({
     slider_url: "",
@@ -27,14 +31,7 @@ const EditSlider = () => {
   useEffect(() => {
     const fetchSlider = async () => {
       try {
-        const response = await axios.get(
-          `${Base_Url}/panel-fetch-slider-by-id/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const response = await VENDOR_SLIDER_LIST_BY_ID(decryptedId);
         setSlider(response.data.slider);
       } catch (error) {
         console.error("Error fetching slider data:", error);
@@ -72,15 +69,7 @@ const EditSlider = () => {
     try {
       setIsButtonDisabled(true);
       setLoading(true);
-      const response = await axios.post(
-        `${Base_Url}/panel-update-slider/${id}?_method=PUT`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await UPDATE_VENDOR_SLIDER(decryptedId, formData);
       if (response.data.code == 200) {
         navigate("/app-update/slider");
         toast.success(response.data.msg || "Data updated successfully");

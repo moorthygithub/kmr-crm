@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../../../components/Layout";
-import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
-import { Base_Url } from "../../../config/BaseUrl";
-import axios from "axios";
 import { ArrowBack } from "@mui/icons-material";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import Layout from "../../../components/Layout";
+import { CREATE_VENDOR_SLIDER } from "../../api/UseApi";
 
 const AddSlider = () => {
   const navigate = useNavigate();
@@ -49,14 +48,7 @@ const AddSlider = () => {
       setLoading(true);
 
       try {
-        const response = await axios({
-          url: `${Base_Url}/panel-create-slider`,
-          method: "POST",
-          data: formData,
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const response = await CREATE_VENDOR_SLIDER(formData);
 
         if (response.data.code == 200) {
           navigate("/app-update/slider");

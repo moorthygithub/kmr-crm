@@ -1,16 +1,19 @@
-import React, { useState, useEffect } from "react";
-import Layout from "../../../components/Layout";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Layout from "../../../components/Layout";
 
-import axios from "axios";
 import { ArrowBack } from "@mui/icons-material";
-import { Base_Url } from "../../../config/BaseUrl";
 import { toast } from "sonner";
 import {
   ButtonCancel,
   ButtonCss,
   ButtonRemove,
 } from "../../../components/common/ButtonCss";
+import {
+  CATEGORY_LIST,
+  CREATE_VENDOR,
+  FETCH_SUB_CATEGORY,
+} from "../../api/UseApi";
 
 const AddRatesList = () => {
   const navigate = useNavigate();
@@ -46,9 +49,7 @@ const AddRatesList = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(`${Base_Url}/panel-fetch-category`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        });
+        const response = await CATEGORY_LIST();
         setCategory(response.data.category);
       } catch (error) {
         toast.error("Failed to fetch categories");
@@ -63,14 +64,7 @@ const AddRatesList = () => {
     const fetchSubCategories = async () => {
       if (vendor.vendor_category) {
         try {
-          const response = await axios.get(
-            `${Base_Url}/panel-fetch-sub-category/${vendor.vendor_category}`,
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-            }
-          );
+          const response = await FETCH_SUB_CATEGORY(vendor.vendor_category);
           setSubCategory(response.data.categorySub);
         } catch (error) {
           toast.error("Failed to fetch subcategories");
@@ -131,14 +125,7 @@ const AddRatesList = () => {
     try {
       setIsButtonDisabled(true);
       setLoading(true);
-      const response = await axios.post(
-        `${Base_Url}/panel-create-vendor`,
-        data,
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      );
-
+      const response = await CREATE_VENDOR();
       if (response.data.code == 200) {
         navigate("/app-update/rates");
         toast.success(response.data.msg || "Data inserted successfully");

@@ -1,12 +1,9 @@
-import React, { useEffect, useMemo, useState } from "react";
-import Layout from "../../components/Layout";
-import { Base_Url } from "../../config/BaseUrl";
-import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
-import { Tooltip, CircularProgress } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import MUIDataTable from "mui-datatables";
-import EditIcon from "@mui/icons-material/Edit";
-import moment from "moment/moment";
+import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Layout from "../../components/Layout";
+import { WEBSITE_ENQUIRY } from "../api/UseApi";
 const WebsiteEnquiry = () => {
   const [loading, setLoading] = useState(true);
   const [WebsiteEnquiryData, setWebsiteEnquiryData] = useState([]);
@@ -16,21 +13,7 @@ const WebsiteEnquiry = () => {
   useEffect(() => {
     const fetchWebsiteEnquiry = async () => {
       try {
-        setLoading(true);
-        const token = localStorage.getItem("token");
-        if (!token) {
-          console.error("No token found, redirecting to login.");
-          return;
-        }
-
-        const response = await axios.get(
-          `${Base_Url}/panel-fetch-contact-list`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await WEBSITE_ENQUIRY();
 
         setWebsiteEnquiryData(response?.data?.contact || []);
       } catch (error) {

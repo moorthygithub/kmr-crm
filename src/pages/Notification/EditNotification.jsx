@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../../components/Layout";
-import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
-import { Base_Url, Image_Url, No_Image_Url } from "../../config/BaseUrl";
-import { toast } from "sonner";
 import { ArrowBack } from "@mui/icons-material";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
+import { ButtonCancel, ButtonCss } from "../../components/common/ButtonCss";
+import { decryptId } from "../../components/common/EncryptionDecryption";
 import {
   EditLoaderComponent,
   ImageLoaderComponent,
 } from "../../components/common/LoaderComponent";
-import { decryptId } from "../../components/common/EncryptionDecryption";
-import { ButtonCancel, ButtonCss } from "../../components/common/ButtonCss";
+import Layout from "../../components/Layout";
+import { Image_Url, No_Image_Url } from "../../config/BaseUrl";
+import { UPDATE_NOTIFICATION, VENDOR_NOTIFICATION_BY_ID } from "../api/UseApi";
 
 const statusOptions = [
   { value: "Active", label: "Active" },
@@ -39,14 +39,7 @@ const EditNotification = () => {
 
     const fetchNotification = async () => {
       try {
-        const response = await axios.get(
-          `${Base_Url}/panel-fetch-notification-by-id/${decryptedId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const response = await VENDOR_NOTIFICATION_BY_ID(decryptedId);
         setNotification(response.data.notification);
       } catch (error) {
         console.error("Error fetching notification data:", error);
@@ -90,15 +83,7 @@ const EditNotification = () => {
     try {
       setIsButtonDisabled(true);
       setLoading(true);
-      const response = await axios.post(
-        `${Base_Url}/panel-update-notification/${decryptedId}?_method=PUT`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await UPDATE_NOTIFICATION(decryptedId, formData);
       if (response.data.code == 200) {
         navigate("/notification");
         toast.success(response.data.msg || "Data updated successfully");

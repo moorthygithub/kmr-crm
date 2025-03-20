@@ -1,6 +1,5 @@
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import Checkbox from "@mui/material/Checkbox";
-import axios from "axios";
 import { useFormik } from "formik";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -8,7 +7,11 @@ import { toast } from "sonner";
 import * as Yup from "yup";
 import siginLogo from "../../assets/kmrlive.png";
 import { ButtonCss } from "../../components/common/ButtonCss";
-import { Base_Url } from "../../config/BaseUrl";
+import {
+  decryptData,
+  encryptData,
+} from "../../components/common/EncryptionDecryption";
+import { PANEL_LOGIN } from "../api/UseApi";
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -31,35 +34,53 @@ const SignIn = () => {
     onSubmit: async (values) => {
       setIsLoading(true);
       try {
-        const response = await axios.post(
-          `${Base_Url}/panel-login`,
-          {
-            username: values.email,
-            password: values.password,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const formData = {
+          username: values.email,
+          password: values.password,
+        };
 
+        const response = await PANEL_LOGIN(formData);
         const data = response.data;
         console.log("API Response:", data);
 
-        if (response.status == 200 && data.UserInfo && data.UserInfo.token) {
-          localStorage.setItem("token", data.UserInfo.token);
-          localStorage.setItem("username", data.UserInfo.user.name);
-          localStorage.setItem("user_type", data.UserInfo.user.user_type);
+        if (response.status === 200 && data.UserInfo && data.UserInfo.token) {
+          const token = data.UserInfo.token;
+          const username = data.UserInfo.user.name;
+          const userType = data.UserInfo.user.user_type;
 
-          const storedToken = localStorage.getItem("token");
-          console.log("Stored Token:", storedToken);
+          const encryptedToken = encryptData(token);
+          const encryptedUsername = encryptData(username);
+          const encryptedUserType = encryptData(userType);
 
-          if (storedToken == data.UserInfo.token) {
+          localStorage.setItem("token", encryptedToken);
+          localStorage.setItem("username", encryptedUsername);
+          localStorage.setItem("user_type", encryptedUserType);
+
+          console.log("Stored Encrypted Token:", encryptedToken);
+          console.log("Stored Encrypted Username:", encryptedUsername);
+          console.log("Stored Encrypted User Type:", encryptedUserType);
+
+          const storedEncryptedToken = localStorage.getItem("token");
+          const storedEncryptedUsername = localStorage.getItem("username");
+          const storedEncryptedUserType = localStorage.getItem("user_type");
+
+          const decryptedToken = decryptData(storedEncryptedToken);
+          const decryptedUsername = decryptData(storedEncryptedUsername);
+          const decryptedUserType = decryptData(storedEncryptedUserType);
+
+          // console.log("Decrypted Token:", decryptedToken);
+          // console.log("Decrypted Username:", decryptedUsername);
+          // console.log("Decrypted User Type:", decryptedUserType);
+
+          if (
+            decryptedToken === token &&
+            decryptedUsername === username &&
+            decryptedUserType == userType
+          ) {
             navigate("/home");
             toast.success("Login Successful.");
           } else {
-            toast.error("Check the username and password.");
+            toast.error("Data mismatch, please try again.");
           }
         } else {
           console.error("Error:", data.msg || "No token returned in response.");
@@ -69,7 +90,7 @@ const SignIn = () => {
         console.error("Error:", error);
         toast.error("An error occurred. Please try again later.");
       } finally {
-        setIsLoading(false); // End loading
+        setIsLoading(false);
       }
     },
   });

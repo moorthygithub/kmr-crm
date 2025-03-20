@@ -1,14 +1,13 @@
-import React, { useEffect, useState, useMemo } from "react";
-import Layout from "../../../components/Layout";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { Tooltip, CircularProgress } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import MUIDataTable from "mui-datatables";
-import { Base_Url } from "../../../config/BaseUrl";
+import { Tooltip } from "@mui/material";
 import moment from "moment";
-import LoaderComponent from "../../../components/common/LoaderComponent";
+import MUIDataTable from "mui-datatables";
+import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { encryptId } from "../../../components/common/EncryptionDecryption";
+import LoaderComponent from "../../../components/common/LoaderComponent";
+import Layout from "../../../components/Layout";
+import { CATEGORY_LIST, VENDOR_LIVE_LIST } from "../../api/UseApi";
 
 const LiveList = () => {
   const [liveList, setLiveList] = useState([]);
@@ -21,15 +20,7 @@ const LiveList = () => {
     const fetchLiveList = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${Base_Url}/panel-fetch-vendor-live-list`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await VENDOR_LIVE_LIST();
 
         setLiveList(response?.data?.vendor || []);
       } catch (error) {
@@ -45,15 +36,7 @@ const LiveList = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${Base_Url}/panel-fetch-category-list`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await CATEGORY_LIST();
 
         setCategories(response?.data?.category || []);
       } catch (error) {

@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../../../components/Layout";
-import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
-import { Base_Url } from "../../../config/BaseUrl";
-import axios from "axios";
 import { ArrowBack } from "@mui/icons-material";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { ButtonCancel, ButtonCss } from "../../../components/common/ButtonCss";
+import Layout from "../../../components/Layout";
+import { CREATE_SUB_CATEGORY, SUB_FETCH_CATEGORY } from "../../api/UseApi";
 
 const AddSubCategory = () => {
   const navigate = useNavigate();
@@ -23,11 +22,7 @@ const AddSubCategory = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(`${Base_Url}/panel-fetch-category`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const response = await SUB_FETCH_CATEGORY();
         setCategorydata(response.data.category || []);
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -72,14 +67,7 @@ const AddSubCategory = () => {
       setLoading(true);
 
       try {
-        const response = await axios({
-          url: `${Base_Url}/panel-create-sub-category`,
-          method: "POST",
-          data: formData,
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const response = await CREATE_SUB_CATEGORY(formData);
 
         if (response.data.code == 200) {
           navigate("/master/subcategory");

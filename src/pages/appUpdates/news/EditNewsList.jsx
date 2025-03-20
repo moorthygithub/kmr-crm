@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Layout from "../../../components/Layout";
-import { useNavigate, useLocation, useParams } from "react-router-dom";
 
-import axios from "axios";
 import { ArrowBack } from "@mui/icons-material";
-import { Base_Url, Image_Url, No_Image_Url } from "../../../config/BaseUrl";
 import { toast } from "sonner";
+import { ButtonCancel, ButtonCss } from "../../../components/common/ButtonCss";
+import { decryptId } from "../../../components/common/EncryptionDecryption";
 import {
   EditLoaderComponent,
   ImageLoaderComponent,
 } from "../../../components/common/LoaderComponent";
-import { decryptId } from "../../../components/common/EncryptionDecryption";
-import { ButtonCancel, ButtonCss } from "../../../components/common/ButtonCss";
+import { Image_Url, No_Image_Url } from "../../../config/BaseUrl";
+import { UPDATE_VENDOR_NEWS, VENDOR_NEWS_LIST_BY_ID } from "../../api/UseApi";
 
 const statusOptions = [
   { value: "Active", label: "Active" },
@@ -42,14 +42,7 @@ const EditNewsList = () => {
       setLoadingData(true);
 
       try {
-        const response = await axios.get(
-          `${Base_Url}/panel-fetch-news-by-id/${decryptedId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const response = await VENDOR_NEWS_LIST_BY_ID(decryptedId);
         setNews(response.data.news);
       } catch (error) {
         console.error("Error fetching news data:", error);
@@ -90,15 +83,7 @@ const EditNewsList = () => {
     try {
       setIsButtonDisabled(true);
       setLoading(true);
-      const response = await axios.post(
-        `${Base_Url}/panel-update-news/${decryptedId}?_method=PUT`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await UPDATE_VENDOR_NEWS(decryptedId, formData);
       if (response.data.code == 200) {
         navigate("/app-update/news");
         toast.success(response.data.msg || "Data updated successfully");

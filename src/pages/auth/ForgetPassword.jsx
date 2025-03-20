@@ -1,43 +1,33 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 
-import mainLogo from "../../assets/kmrlive.png"; // Ensure the path is correct
 import { toast } from "sonner";
+import mainLogo from "../../assets/kmrlive.png"; // Ensure the path is correct
 import { ButtonCss } from "../../components/common/ButtonCss";
-import { Base_Url } from "../../config/BaseUrl";
+import { FORGOT_PASSWORD } from "../api/UseApi";
 
 const ForgetPassword = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
 
-  const onResetPassword = () => {
-    const data = {
-      username: username,
-      email: email,
-    };
+  const onResetPassword = async () => {
+    if (!username || !email) {
+      toast.warn("Please enter a Username & Email");
+      return;
+    }
 
-    if (email !== "" && username !== "") {
-      axios({
-        url: `${Base_Url}/panel-send-password?username=${username}&email=${email}`,
-        method: "POST",
-        data: data,
-      })
-        .then((res) => {
-          if (res.data.code == 200) {
-            toast.success("New Password Sent to your Email");
+    try {
+      const res = await FORGOT_PASSWORD({ username, email });
 
-            navigate("/signin");
-          } else {
-            toast.error("This email is not registered with us.");
-          }
-        })
-        .catch((error) => {
-          toast.error("Email Not Sent.");
-        });
-    } else {
-      toast.warn("Please enter a User Name & Email");
+      if (res.data.code === 200) {
+        toast.success("New Password Sent to your Email");
+        navigate("/signin");
+      } else {
+        toast.error("This email is not registered with us.");
+      }
+    } catch (error) {
+      toast.error("Email Not Sent.");
     }
   };
 

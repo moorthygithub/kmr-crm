@@ -1,15 +1,14 @@
-import React, { useEffect, useMemo, useState } from "react";
-import Layout from "../../../components/Layout";
-import { useNavigate } from "react-router-dom";
-import { Base_Url } from "../../../config/BaseUrl";
-import axios from "axios";
+import { Tooltip } from "@mui/material";
 import MUIDataTable from "mui-datatables";
-import { CircularProgress, Tooltip } from "@mui/material";
+import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Layout from "../../../components/Layout";
 
 import EditIcon from "@mui/icons-material/Edit";
-import LoaderComponent from "../../../components/common/LoaderComponent";
-import { encryptId } from "../../../components/common/EncryptionDecryption";
 import { ButtonCss } from "../../../components/common/ButtonCss";
+import { encryptId } from "../../../components/common/EncryptionDecryption";
+import LoaderComponent from "../../../components/common/LoaderComponent";
+import { VENDOR_LIST } from "../../api/UseApi";
 
 const VendorList = () => {
   const [vendorData, setVendorData] = useState([]);
@@ -20,15 +19,7 @@ const VendorList = () => {
     const fetchRates = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${Base_Url}/panel-fetch-vendor-list`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await VENDOR_LIST();
 
         setVendorData(response?.data?.vendor || []);
       } catch (error) {

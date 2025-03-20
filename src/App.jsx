@@ -37,7 +37,7 @@ import DisableRightClick from "./components/common/DisableRightClick";
 function App() {
   return (
     <>
-      {/* <DisableRightClick /> */}
+      <DisableRightClick />
       <Toaster richColors position="top-right" />
       <Routes>
         <Route path="/" element={<SignIn />} />

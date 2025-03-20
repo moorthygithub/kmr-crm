@@ -1,12 +1,12 @@
-import React, { useEffect, useMemo, useState } from "react";
-import Layout from "../../../components/Layout";
-import { Base_Url } from "../../../config/BaseUrl";
-import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
-import { Tooltip, CircularProgress } from "@mui/material";
-import MUIDataTable from "mui-datatables";
 import EditIcon from "@mui/icons-material/Edit";
-import moment from "moment/moment";
+import { CircularProgress, Tooltip } from "@mui/material";
+import MUIDataTable from "mui-datatables";
+import React, { useEffect, useMemo, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import Layout from "../../../components/Layout";
+import { VENDOR_SLIDER_LIST } from "../../api/UseApi";
+import { encryptId } from "../../../components/common/EncryptionDecryption";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 const Slider = () => {
   const [loading, setLoading] = useState(true);
   const [SliderData, setSliderData] = useState([]);
@@ -17,20 +17,8 @@ const Slider = () => {
     const fetchSlider = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem("token");
-        if (!token) {
-          console.error("No token found, redirecting to login.");
-          return;
-        }
 
-        const response = await axios.get(
-          `${Base_Url}/panel-fetch-slider-list`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await VENDOR_SLIDER_LIST();
 
         setSliderData(response?.data?.slider || []);
       } catch (error) {
@@ -105,9 +93,17 @@ const Slider = () => {
           sort: false,
           customBodyRender: (value) => (
             <Tooltip title="Edit" placement="top">
-              <Link to={`/app-update/slider/edit/${value}`}>
+              <span
+                onClick={() => {
+                  navigate(
+                    `/app-update/slider/edit/${encodeURIComponent(
+                      encryptId(value)
+                    )}`
+                  );
+                }}
+              >
                 <EditIcon className="text-gray-600 hover:text-accent-500" />
-              </Link>
+              </span>
             </Tooltip>
           ),
         },
@@ -126,11 +122,7 @@ const Slider = () => {
     print: false,
     textLabels: {
       body: {
-        noMatch: loading ? (
-          <CircularProgress className="text-accent-500" />
-        ) : (
-          "Sorry, no data available"
-        ),
+        noMatch: loading ? <LoaderComponent /> : "Sorry, no data available",
       },
     },
     setRowProps: (row) => ({

@@ -1,15 +1,15 @@
-import React, { useEffect, useState, useMemo } from "react";
-import Layout from "../../../components/Layout";
-import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
-import { Tooltip, CircularProgress, IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import MUIDataTable from "mui-datatables";
+import { IconButton, Tooltip } from "@mui/material";
 import moment from "moment";
-import { Base_Url, Image_Url, No_Image_Url } from "../../../config/BaseUrl";
-import LoaderComponent from "../../../components/common/LoaderComponent";
-import { encryptId } from "../../../components/common/EncryptionDecryption";
+import MUIDataTable from "mui-datatables";
+import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ButtonCss } from "../../../components/common/ButtonCss";
+import { encryptId } from "../../../components/common/EncryptionDecryption";
+import LoaderComponent from "../../../components/common/LoaderComponent";
+import Layout from "../../../components/Layout";
+import { Image_Url, No_Image_Url } from "../../../config/BaseUrl";
+import { VENDOR_NEWS_LIST } from "../../api/UseApi";
 
 const NewsList = () => {
   const [news, setNews] = useState([]);
@@ -21,12 +21,7 @@ const NewsList = () => {
     const fetchNews = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem("token");
-        const response = await axios.get(`${Base_Url}/panel-fetch-news-list`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await VENDOR_NEWS_LIST();
 
         setNews(response?.data?.news || []);
       } catch (error) {

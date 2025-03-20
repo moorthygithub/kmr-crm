@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
+import { decryptData } from "./common/EncryptionDecryption";
 
 const Layout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const usertype_id = localStorage.getItem("user_type");
+  const usertype_descryption = localStorage.getItem("user_type");
+
+  const usertype_id = decryptData(usertype_descryption);
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {

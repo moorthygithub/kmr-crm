@@ -6,14 +6,18 @@ import {
   DialogTitle,
   Slide,
 } from "@mui/material";
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { ButtonCancel, ButtonCss } from "../../components/common/ButtonCss";
+import { decryptData } from "../../components/common/EncryptionDecryption";
 import { EditLoaderComponent } from "../../components/common/LoaderComponent";
 import Layout from "../../components/Layout";
-import { Base_Url } from "../../config/BaseUrl";
+import {
+  CHNAGE_PASSWORD,
+  FETCH_PROFILE_DATA,
+  UPDATE_PROFILE,
+} from "../api/UseApi";
 
 // Reusable Input Component
 const InputField = ({
@@ -121,17 +125,14 @@ const Profile = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loadingdata, setLoadingData] = useState(false);
 
-  // Fetch profile data
+  const decryptedUsername = localStorage.getItem("username");
+  const username = decryptData(decryptedUsername);
   useEffect(() => {
     const fetchProfile = async () => {
       setLoadingData(true);
 
       try {
-        const response = await axios.get(`${Base_Url}/panel-fetch-profile`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const response = await FETCH_PROFILE_DATA();
         setFirstName(response.data.user.name);
         setPhone(response.data.user.mobile);
         setEmail(response.data.user.email);
@@ -174,15 +175,7 @@ const Profile = () => {
     };
 
     try {
-      const response = await axios.post(
-        `${Base_Url}/panel-update-profile`,
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await UPDATE_PROFILE(data);
 
       if (response.data.code === 401) {
         toast.error("Duplicate Entry of Name");
@@ -215,19 +208,11 @@ const Profile = () => {
     const data = {
       old_password: oldPassword,
       password: newPassword,
-      username: localStorage.getItem("username"),
+      username: username,
     };
 
     try {
-      const response = await axios.post(
-        `${Base_Url}/panel-change-password`,
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await CHNAGE_PASSWORD(data);
 
       if (response.data.code === 200) {
         toast.success("Password Updated Successfully!");
