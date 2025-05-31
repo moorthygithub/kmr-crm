@@ -116,8 +116,8 @@ export const VENDOR_LIVE_LIST = () =>
 export const VENDOR_LIVE_LIST_BY_ID = (decryptedId) =>
   apiRequest("GET", `/panel-fetch-vendor-live-by-id/${decryptedId}`);
 // UPDATE VENDOR_LIVE
-export const UPDATE_VENDOR_LIVE = (decryptedId) =>
-  apiRequest("PUT", `/panel-update-vendor-live/${decryptedId}`);
+export const UPDATE_VENDOR_LIVE = (decryptedId, data) =>
+  apiRequest("PUT", `/panel-update-vendor-live/${decryptedId}`, data);
 // VENDORS SPOT_RATES
 export const VENDOR_SPOT_RATES_LIST = () =>
   apiRequest("GET", `/panel-fetch-vendor-spot-rates-list`);

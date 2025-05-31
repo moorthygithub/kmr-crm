@@ -70,7 +70,7 @@ const EditLiveList = () => {
 
     try {
       setLoading(true);
-      const response = await UPDATE_VENDOR_LIVE(decryptedId);
+      const response = await UPDATE_VENDOR_LIVE(decryptedId, data);
       if (response.data.code == 200) {
         navigate("/app-update/live");
         toast.success(response.data.msg || "Data updated successfully");
